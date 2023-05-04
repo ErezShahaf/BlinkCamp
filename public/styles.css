@@ -1,0 +1,156 @@
+*, *::after , *::before 
+{
+    box-sizing: border-box;
+}
+:root 
+{
+    --hue: 0;
+    --saturation: 0%;
+    --background-color: hsl(var(--hue), var(--saturation), 5%);
+    --dot-color: hsl(var(--hue), var(--saturation), 100%);
+}
+body {
+    margin: 0;
+    background-color: #1e1e1e;
+    overflow: hidden;
+}
+.dot 
+{
+    --x: 50;
+    --y: 50;
+    --radius: 2;
+    position: absolute;
+    background-color: white;
+    left: calc((var(--x) * 1vw));
+    top: calc((var(--y) * 1vh));
+    border-radius: 50%;
+    width: calc(var(--radius) * 1vw);
+    height: calc(var(--radius) * 1vw);
+    transform: translate(-50%,-50%);
+}
+
+.arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: relative;
+}
+
+.left {
+position: absolute;
+border-width: 10px 20px 10px 0;
+top: 90vh;
+left: calc(5vw + 120px);
+border-color: transparent #ffffff transparent transparent;
+}
+
+.right {
+position: absolute;
+border-width: 10px 0 10px 20px;
+top: 90vh;
+left: calc(5vw + 150px);
+border-color: transparent transparent transparent #ffffff;
+}
+
+.arrow:hover {
+transform: scale(1.2);
+}
+  
+.changeroutine 
+{
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    top: 90vh;
+    left: 5vw;
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+    -webkit-user-select: none;  /* Chrome, Safari, Opera */
+    -moz-user-select: none;     /* Firefox */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Standard syntax */
+}
+
+.routinename 
+{
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    top: calc(90vh + 30px);
+    left: 5vw;
+    font-weight: bold;
+    font-size: 15px;
+    color: white;
+    -webkit-user-select: none;  /* Chrome, Safari, Opera */
+    -moz-user-select: none;     /* Firefox */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Standard syntax */
+}
+
+#sizeslider
+{
+    position:absolute;
+    top: calc(90vh - 30px);
+    width: 120px;
+    left: calc(5vw + 50px);
+}
+
+#sizetext
+{
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    top: calc(90vh - 30px);
+    left: 5vw;
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+    -webkit-user-select: none;  /* Chrome, Safari, Opera */
+    -moz-user-select: none;     /* Firefox */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Standard syntax */
+}
+
+#velocityslider
+{
+    position:absolute;
+    top: calc(90vh - 60px);
+    width: 120px;
+    left: calc(5vw + 50px);
+}
+
+#velocitytext
+{
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    top: calc(90vh - 60px);
+    left: 5vw;
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+    -webkit-user-select: none;  /* Chrome, Safari, Opera */
+    -moz-user-select: none;     /* Firefox */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Standard syntax */
+}
+
+.socialicon 
+{
+    position: absolute;
+    top: 90vh;
+    right: 5vw;
+    width: 50px;
+    filter: invert(100%) sepia(100%) saturate(2%) hue-rotate(356deg) brightness(109%) contrast(101%);
+    -webkit-user-select: none;  /* Chrome, Safari, Opera */
+    -moz-user-select: none;     /* Firefox */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Standard syntax */
+    -webkit-user-drag: none;
+}
+.socialicon:hover 
+{
+    transform: scale(1.2);
+}
+
+#github-icon 
+{
+    right: calc(5vw + 70px);
+}

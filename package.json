@@ -1,0 +1,17 @@
+{
+  "name": "eye-tracking-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'tsc'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "typescript": "^5.0.4"
+  }
+}
