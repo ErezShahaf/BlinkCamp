@@ -13,7 +13,7 @@ If you would like to suggest new features, go to our [discord channel](https://d
 BlinkCamp is written in TypeScript, CSS, and HTML, feel free to dig into the source code contribute new routines / themes / design improvements. For core changes or support I let's have a discussion in the [discord channel](https://discord.gg/Fea2vU8JFC)
 
 
-#TODO
+# TODO
 -Mobile compatibility (UI fixed).
 -Target speed should be consistent in both axes, currently the ratio of the screen is not being considered and the target moves based on percentage of the axis, it shouldn't be that way.
 -Add more color themes.
