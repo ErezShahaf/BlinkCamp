@@ -14,6 +14,6 @@ BlinkCamp is written in TypeScript, CSS, and HTML, feel free to dig into the sou
 
 
 # TODO
--Mobile compatibility (UI fixed).
--Target speed should be consistent in both axes, currently the ratio of the screen is not being considered and the target moves based on percentage of the axis, it shouldn't be that way.
--Add more color themes.
+- Mobile compatibility (UI fixed).
+- Target speed should be consistent in both axes, currently the ratio of the screen is not being considered and the -target moves based on percentage of the axis, it shouldn't be that way.
+- Add more color themes.
