@@ -3,7 +3,7 @@
  
 # Features
 - Different routines
-- Change peed
+- Change speed
 - Change size
 
 # Suggestions
