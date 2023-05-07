@@ -1,7 +1,5 @@
 let lastFrameTime:number;
 let tickEvent:CustomEvent;
-let leftArrowClickEvent:CustomEvent;
-let rightArrowClickEvent:CustomEvent;
 const loopDetail = 
 {
     dTime: 0
