@@ -7,7 +7,7 @@
 - Change size
 
 # Suggestions
-If you would like to suggest new features, go to our [discord channel](https://discord.gg/g9tGtgs8Mt)
+If you would like to suggest new features, go to our [discord channel](https://discord.gg/Fea2vU8JFC)
 
 # Want to Contribute?
-BlinkCamp is written in TypeScript, CSS, and HTML, feel free to dig into the source code contribute new routines / themes / design improvements. For core changes or support I let's have a discussion in the [discord channel](https://discord.gg/g9tGtgs8Mt)
+BlinkCamp is written in TypeScript, CSS, and HTML, feel free to dig into the source code contribute new routines / themes / design improvements. For core changes or support I let's have a discussion in the [discord channel](https://discord.gg/Fea2vU8JFC)
