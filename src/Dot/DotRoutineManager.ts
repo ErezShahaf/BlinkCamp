@@ -1,3 +1,5 @@
+import { PeekabooRoutine } from './Routines/PeekabooRoutine.js';
+import { InverseWaveRoutine } from './Routines/InverseWaveRoutine.js';
 import { CounterClockwiseRotationRoutine } from "./Routines/CounterClockwiseRotationRoutine.js";
 import { ClockwiseRotationRoutine } from "./Routines/ClockwiseRotationRoutine.js";
 import { ElasticCollisionRoutine } from "./Routines/ElasticCollisionRoutine.js";
@@ -20,6 +22,8 @@ const RoutineManager: { activeDotRoutines: Array<IDotRoutine>, currentRoutineInd
         DiagonalUpwardRoutine,
         DiagonalDownwardRoutine,
         WaveRoutine,
+        InverseWaveRoutine,
+        PeekabooRoutine
     ],
     currentRoutineIndex: 0,
 };

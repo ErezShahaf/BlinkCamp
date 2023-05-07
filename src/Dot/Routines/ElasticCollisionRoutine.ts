@@ -2,7 +2,7 @@ import { Dot } from "../Dot.js";
 import { IDotRoutine } from "../IDotRoutine.js";
 
 const randomPhaseAngleInRadians = Math.random() * 2 * Math.PI;
-const elasticCollisionMultiplier = 0.2;
+const elasticCollisionMultiplier = 0.15;
 let velocityX:number = Math.cos(randomPhaseAngleInRadians) * elasticCollisionMultiplier;
 let velocityY:number = Math.sin(randomPhaseAngleInRadians) * elasticCollisionMultiplier;
 export const ElasticCollisionRoutine : IDotRoutine = {

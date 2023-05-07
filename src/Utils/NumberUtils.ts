@@ -4,3 +4,5 @@ function GetRandomNumberInBetween(num1:number,num2:number):number
     const max = Math.max(num1, num2);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export {GetRandomNumberInBetween}

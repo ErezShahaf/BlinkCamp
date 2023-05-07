@@ -1,5 +1,5 @@
 const randomPhaseAngleInRadians = Math.random() * 2 * Math.PI;
-const elasticCollisionMultiplier = 0.2;
+const elasticCollisionMultiplier = 0.15;
 let velocityX = Math.cos(randomPhaseAngleInRadians) * elasticCollisionMultiplier;
 let velocityY = Math.sin(randomPhaseAngleInRadians) * elasticCollisionMultiplier;
 export const ElasticCollisionRoutine = {

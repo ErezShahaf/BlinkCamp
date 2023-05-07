@@ -1,8 +1,6 @@
 "use strict";
 let lastFrameTime;
 let tickEvent;
-let leftArrowClickEvent;
-let rightArrowClickEvent;
 const loopDetail = {
     dTime: 0
 };
