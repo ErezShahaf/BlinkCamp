@@ -1,3 +1,4 @@
+import { DirectionChangingRotationsRoutine } from './Routines/DirectionChangingRotationsRoutine.js';
 import { PeekabooRoutine } from './Routines/PeekabooRoutine.js';
 import { InverseWaveRoutine } from './Routines/InverseWaveRoutine.js';
 import { CounterClockwiseRotationRoutine } from "./Routines/CounterClockwiseRotationRoutine.js";
@@ -13,6 +14,7 @@ const RoutineManager = {
     activeDotRoutines: [
         CounterClockwiseRotationRoutine,
         ClockwiseRotationRoutine,
+        DirectionChangingRotationsRoutine,
         ElasticCollisionRoutine,
         LeftRightRoutine,
         UpDownRoutine,

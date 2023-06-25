@@ -1,7 +1,7 @@
 import RoutineManager from "./Dot/DotRoutineManager.js";
 let routineNameText;
 routineNameText = document.querySelector(".routinename");
-export const FollowRoutineTitle = () => {
+export const SubscribeToRoutineChangedEvent = () => {
     UpdateTitle(); // Load the first title
     window.addEventListener('DotRoutineManager:RoutineChanged', () => {
         UpdateTitle();

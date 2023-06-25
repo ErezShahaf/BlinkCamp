@@ -1,23 +1,27 @@
 import { Dot } from "./Dot/Dot.js";
-import { FollowRoutineTitle } from "./RoutineTitleFollower.js";
+import { SubscribeToRoutineChangedEvent } from "./RoutineTitleFollower.js";
+import { SubscribeToNotificationsButtonClick } from "./PushNotifications.js";
 
-let leftArrowClickEvent:CustomEvent;
-let rightArrowClickEvent:CustomEvent;
-let velocityValueChanged:CustomEvent;
-let radiusValueChanged:CustomEvent;
 const InitializeScene = ():void  => 
 {
     new Dot(document.getElementById("dot")!);
+    // TODO
+    // Creat UIEventDispatcher class (component base type) and move them there, and change the name of this class to GameScene.
     SetLeftArrowEvent();
     SetRightArrowEvent();
     SetVelocityChangeEvent();
     SetRadiusChangeEvent();
-    FollowRoutineTitle();
+    // SetReminderButtonEvent();
+
+    // TODO
+    // Create a component base class which has awake and update methods, and instantiate those classes instead.
+    SubscribeToRoutineChangedEvent();
+    SubscribeToNotificationsButtonClick();
 }
 
 const SetLeftArrowEvent = () :void => 
 {
-    leftArrowClickEvent = new CustomEvent('Game:LeftArrowClick');
+    const leftArrowClickEvent = new CustomEvent('Game:LeftArrowClick');
     const leftArrow: HTMLDivElement = document.querySelector(".arrow.left") as HTMLDivElement;
     leftArrow.addEventListener("click", () => {
         window.dispatchEvent(leftArrowClickEvent);
@@ -26,36 +30,48 @@ const SetLeftArrowEvent = () :void =>
 
 const SetRightArrowEvent = () : void => 
 {
-    rightArrowClickEvent = new CustomEvent('Game:RightArrowClick');
+    const rightArrowClickEvent = new CustomEvent('Game:RightArrowClick');
     const rightArrow = document.querySelector(".arrow.right") as HTMLDivElement;
     rightArrow.addEventListener("click", () => {
         window.dispatchEvent(rightArrowClickEvent);
     });
 }
 
-const SetVelocityChangeEvent = () : void => 
-{
-    const velocitySlider = document.getElementById("velocityslider") as HTMLInputElement;
-    velocitySlider.addEventListener("input", () => {
-    velocityValueChanged = new CustomEvent('Game:VelocityValueChanged', {
-        detail: {
-          velocity: velocitySlider.value
-        }
-      });
-      window.dispatchEvent(velocityValueChanged);
-    });
-}
+const SetVelocityChangeEvent = () => {
+  const velocitySlider = document.getElementById("velocityslider") as HTMLInputElement;
+  const velocityValueChanged = new CustomEvent('Game:VelocityValueChanged', {
+    detail: {
+      velocity: velocitySlider.value
+    }
+  });
 
-const SetRadiusChangeEvent = () : void => 
+  velocitySlider.addEventListener("input", () => {
+    velocityValueChanged.detail.velocity = velocitySlider.value;
+    window.dispatchEvent(velocityValueChanged);
+  });
+};
+
+const SetRadiusChangeEvent = () => {
+  const radiusSlider = document.getElementById("sizeslider") as HTMLInputElement;
+  const radiusValueChanged = new CustomEvent('Game:RadiusValueChanged', {
+    detail: {
+      radius: radiusSlider.value
+    }
+  });
+
+  radiusSlider.addEventListener("input", () => {
+    radiusValueChanged.detail.radius = radiusSlider.value;
+    window.dispatchEvent(radiusValueChanged);
+  });
+};
+
+
+const SetReminderButtonEvent = () : void => 
 {
-    const radiusSlider = document.getElementById("sizeslider") as HTMLInputElement;
-    radiusSlider.addEventListener("input", () => {
-    radiusValueChanged = new CustomEvent('Game:RadiusValueChanged', {
-        detail: {
-          radius: radiusSlider.value
-        }
-      });
-      window.dispatchEvent(radiusValueChanged);
+    const notificationsClickEvent = new CustomEvent('Game:NotificationsButtonClick');
+    const button = document.getElementById("notifications-button") as HTMLDivElement;
+    button.addEventListener("click", () => {
+        window.dispatchEvent(notificationsClickEvent);
     });
 }
 

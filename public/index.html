@@ -6,25 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/svg+xml" href="Assets/dot.svg">
-    <script src="./Engine/GameLoop.js" type="module"></script>
-    <script src="./Game.js" type="module"></script>
-    <title>BlinkCamp Eye Training Exercises</title>
-    <meta name="description" content="Train your eyes with our free, open-source website! Improve visual 
-    acuity and reaction times with customizable routines and adjustable speed and size options. Try it now!">
+    <title>BlinkCamp - Free Online Eye Muscles And Vision Training Exercises</title>
+    <meta name="description" content="BlinkCamp Is A Free Online Software That Helps Individuals Acheive Great Results For Eye Treatment And Visual Improvement. Try It Out Now!">
     <html lang='en'>
-    <meta name="keywords" content="eye training exercises,eye exercise, eye exercise online, visual acuity improvement, reaction time, eye strain,
-    exercise your eyes, free and open-source website, BlinkCamp, dot, customizable routines, skill levels, fun">
+    <meta name="keywords" content="eye training exercises,online eye exercises, vision exercises,eye strain exercises,
+    online eye trainer, BlinkCamp, lazy eye exercises">
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HS9SH7F8BT"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-HS9SH7F8BT"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
     gtag('config', 'G-HS9SH7F8BT');
-    </script>
+    </script> -->
 </head>
 <body>
+    <!-- <div id="videoplayercontainer">
+        <div id="videoplayer"></div>
+    </div> -->
     <div class="game">
         <div class="dot" id="dot"></div>
     </div>
@@ -37,20 +37,23 @@
         <input id="sizeslider" type="range" min="0.01" max="10" value="2" step="0.001">
         <div class="changeroutine">Change Routine</div>
         <div class="routinename">Routine Name</div>
+        <!-- <div class="backgroundvideo">Background Video</div> -->
+        <!-- <input type="checkbox" class="backgroundvideotick" checked></div> -->
+        <!-- <div class="notifications">Set Daily Reminders</div>
+        <button class="notifications" id="notifications-button"></button> -->
         <a href="https://discord.gg/Fea2vU8JFC" target="_blank">
             <img src="Assets/discord-icon.svg" class="socialicon" id="discord-icon" alt="Blinkcamp discord icon">
         </a>
         <a href="https://github.com/ErezShahaf/BlinkCamp" target="_blank">
             <img src="Assets/github-icon.svg" class="socialicon" id="github-icon" alt="Blinkcamp github repository icon">
         </a>
+        <a href="https://ko-fi.com/blinkcamp" target="_blank">
+            <img src="Assets/kofi-icon.svg" class="socialicon" id="kofi-icon" alt="BlinkCamp Ko-fi icon">
+        </a>
     </div>
-    <!-- Visually hidden texts, just for SEO -->
-    <div class="visually-hidden" aria-hidden="true">
-        <h1>Eye Training Exercises | Visual Acuity Improvement | BlinkCamp</h1>
-        <p>BlinkCamp is a free and open-source website for eye training exercises, with customizable routines that can help improve visual acuity and reaction times. Our website features a dot that moves around with many different routines that you can choose from, as well as options to make it faster or smaller.</p>
-        <p>Whether you're looking to improve your reaction time, reduce eye strain, or just want a fun way to exercise your eyes, BlinkCamp has something for you. Our website is great for people of all ages and skill levels.</p>
-        <p>Keywords: eye training exercises, visual acuity improvement, reaction time, eye strain, exercise your eyes, free and open-source website, BlinkCamp, dot, customizable routines, skill levels, fun.</p>
-    </div>
-      
 </body>
+<script src="https://www.youtube.com/iframe_api"></script>
+<!-- <script src="./BackgroundVideo.js"></script> -->
+<script src="./Engine/GameLoop.js" type="module"></script>
+<script src="./Game.js" type="module"></script>
 </html>
