@@ -35,8 +35,7 @@ const RoutineManager: { activeDotRoutines: Array<IDotRoutine>, currentRoutineInd
 
 
 window.addEventListener('Game:RoutineSelected', (event: Event) => {
-    const requestedIndex = (event as CustomEvent).detail?.index;
-    if (typeof requestedIndex !== 'number') return;
+    const requestedIndex = (event as CustomEvent).detail.index;
     if (requestedIndex < 0 || requestedIndex >= RoutineManager.activeDotRoutines.length) return;
     if (requestedIndex === RoutineManager.currentRoutineIndex) return;
     RoutineManager.currentRoutineIndex = requestedIndex;

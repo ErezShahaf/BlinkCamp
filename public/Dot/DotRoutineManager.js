@@ -29,10 +29,7 @@ const RoutineManager = {
     currentRoutineIndex: 0,
 };
 window.addEventListener('Game:RoutineSelected', (event) => {
-    var _a;
-    const requestedIndex = (_a = event.detail) === null || _a === void 0 ? void 0 : _a.index;
-    if (typeof requestedIndex !== 'number')
-        return;
+    const requestedIndex = event.detail.index;
     if (requestedIndex < 0 || requestedIndex >= RoutineManager.activeDotRoutines.length)
         return;
     if (requestedIndex === RoutineManager.currentRoutineIndex)

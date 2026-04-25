@@ -1,201 +1,221 @@
 import RoutineManager from "./Dot/DotRoutineManager.js";
 
-let trigger: HTMLButtonElement | null = null;
-let menu: HTMLUListElement | null = null;
-let focusedIndex: number = -1;
+const ITEM_SELECTOR = "li[data-routine-index]";
 
 export const SubscribeToRoutineMenu = (): void => {
-    trigger = document.getElementById("routine-trigger") as HTMLButtonElement | null;
-    menu = document.getElementById("routine-menu") as HTMLUListElement | null;
+    const trigger = document.getElementById("routine-trigger") as HTMLButtonElement | null;
+    const menu = document.getElementById("routine-menu") as HTMLUListElement | null;
     if (!trigger || !menu) return;
-
-    BuildMenuItems();
-    UpdateActiveItem();
-
-    trigger.addEventListener("click", (event: MouseEvent) => {
-        event.stopPropagation();
-        ToggleMenu();
-    });
-
-    trigger.addEventListener("keydown", HandleTriggerKeydown);
-
-    menu.addEventListener("click", (event: MouseEvent) => {
-        const item = (event.target as HTMLElement).closest("li[data-routine-index]") as HTMLLIElement | null;
-        if (!item) return;
-        SelectIndex(Number(item.dataset.routineIndex));
-    });
-
-    menu.addEventListener("mousemove", (event: MouseEvent) => {
-        const item = (event.target as HTMLElement).closest("li[data-routine-index]") as HTMLLIElement | null;
-        if (!item) return;
-        SetFocusedIndex(Number(item.dataset.routineIndex), false);
-    });
-
-    document.addEventListener("mousedown", (event: MouseEvent) => {
-        if (!IsOpen()) return;
-        const target = event.target as Node;
-        if (trigger!.contains(target) || menu!.contains(target)) return;
-        CloseMenu();
-    });
-
-    window.addEventListener("DotRoutineManager:RoutineChanged", () => {
-        UpdateActiveItem();
-    });
+    new RoutineMenu(trigger, menu);
 };
 
-const HandleTriggerKeydown = (event: KeyboardEvent): void => {
-    const open = IsOpen();
-    const lastIndex = RoutineManager.activeDotRoutines.length - 1;
+class RoutineMenu {
+    private trigger: HTMLButtonElement;
+    private menu: HTMLUListElement;
+    private focusedIndex: number = -1;
+    private outsideMouseDownHandler: ((event: MouseEvent) => void) | null = null;
 
-    switch (event.key) {
-        case "ArrowDown":
-        case "Down":
-            event.preventDefault();
-            if (!open) {
-                OpenMenu();
+    constructor(trigger: HTMLButtonElement, menu: HTMLUListElement) {
+        this.trigger = trigger;
+        this.menu = menu;
+
+        this.BuildMenuItems();
+        this.UpdateActiveItem();
+
+        this.trigger.addEventListener("click", event => {
+            event.stopPropagation();
+            this.ToggleMenu();
+        });
+        this.trigger.addEventListener("keydown", event => this.HandleTriggerKeydown(event));
+
+        this.menu.addEventListener("click", event => {
+            const item = this.GetItemFromEvent(event);
+            if (item) this.SelectIndex(Number(item.dataset.routineIndex));
+        });
+        this.menu.addEventListener("mousemove", event => {
+            const item = this.GetItemFromEvent(event);
+            if (item) this.SetFocusedIndex(Number(item.dataset.routineIndex), false);
+        });
+
+        window.addEventListener("DotRoutineManager:RoutineChanged", () => this.UpdateActiveItem());
+    }
+
+    private get IsOpen(): boolean {
+        return this.trigger.getAttribute("aria-expanded") === "true";
+    }
+
+    private get LastIndex(): number {
+        return RoutineManager.activeDotRoutines.length - 1;
+    }
+
+    private OpenMenu(): void {
+        if (this.IsOpen) return;
+        this.trigger.setAttribute("aria-expanded", "true");
+        this.menu.hidden = false;
+        this.SetFocusedIndex(RoutineManager.currentRoutineIndex, true);
+        this.AttachOutsideMouseDown();
+    }
+
+    private CloseMenu(): void {
+        if (!this.IsOpen) return;
+        this.trigger.setAttribute("aria-expanded", "false");
+        this.menu.hidden = true;
+        this.ClearFocusedIndex();
+        this.DetachOutsideMouseDown();
+    }
+
+    private ToggleMenu(): void {
+        if (this.IsOpen) this.CloseMenu();
+        else this.OpenMenu();
+    }
+
+    private SelectIndex(index: number): void {
+        const event = new CustomEvent("Game:RoutineSelected", {
+            detail: { index },
+        });
+        window.dispatchEvent(event);
+        this.CloseMenu();
+    }
+
+    private SetFocusedIndex(index: number, scrollIntoView: boolean): void {
+        this.focusedIndex = index;
+        const items = this.GetItems();
+        items.forEach((item, i) => item.classList.toggle("focused", i === index));
+        const focused = items[index];
+        if (focused) {
+            this.trigger.setAttribute("aria-activedescendant", focused.id);
+            if (scrollIntoView) focused.scrollIntoView({ block: "nearest" });
+        } else {
+            this.trigger.removeAttribute("aria-activedescendant");
+        }
+    }
+
+    private ClearFocusedIndex(): void {
+        this.focusedIndex = -1;
+        this.GetItems().forEach(item => item.classList.remove("focused"));
+        this.trigger.removeAttribute("aria-activedescendant");
+    }
+
+    private GetItems(): NodeListOf<HTMLLIElement> {
+        return this.menu.querySelectorAll<HTMLLIElement>(ITEM_SELECTOR);
+    }
+
+    private GetItemFromEvent(event: Event): HTMLLIElement | null {
+        return (event.target as HTMLElement).closest(ITEM_SELECTOR) as HTMLLIElement | null;
+    }
+
+    private BuildMenuItems(): void {
+        const items = RoutineManager.activeDotRoutines.map((routine, index) => {
+            const li = document.createElement("li");
+            li.id = `routine-option-${index}`;
+            li.setAttribute("role", "option");
+            li.dataset.routineIndex = index.toString();
+            li.textContent = routine?.title ?? `Routine ${index + 1}`;
+            return li;
+        });
+        this.menu.replaceChildren(...items);
+    }
+
+    private UpdateActiveItem(): void {
+        this.GetItems().forEach(item => {
+            const isActive = Number(item.dataset.routineIndex) === RoutineManager.currentRoutineIndex;
+            item.classList.toggle("active", isActive);
+            item.setAttribute("aria-selected", isActive ? "true" : "false");
+        });
+    }
+
+    private AttachOutsideMouseDown(): void {
+        if (this.outsideMouseDownHandler) return;
+        this.outsideMouseDownHandler = (event: MouseEvent) => {
+            const target = event.target as Node;
+            if (this.trigger.contains(target) || this.menu.contains(target)) return;
+            this.CloseMenu();
+        };
+        document.addEventListener("mousedown", this.outsideMouseDownHandler);
+    }
+
+    private DetachOutsideMouseDown(): void {
+        if (!this.outsideMouseDownHandler) return;
+        document.removeEventListener("mousedown", this.outsideMouseDownHandler);
+        this.outsideMouseDownHandler = null;
+    }
+
+    private HandleTriggerKeydown(event: KeyboardEvent): void {
+        const open = this.IsOpen;
+        const last = this.LastIndex;
+
+        switch (event.key) {
+            case "ArrowDown":
+            case "Down":
+                event.preventDefault();
+                if (!open) this.OpenMenu();
+                else this.SetFocusedIndex(this.focusedIndex < last ? this.focusedIndex + 1 : 0, true);
                 return;
-            }
-            SetFocusedIndex(focusedIndex < lastIndex ? focusedIndex + 1 : 0, true);
-            return;
-        case "ArrowUp":
-        case "Up":
-            event.preventDefault();
-            if (!open) {
-                OpenMenu();
+
+            case "ArrowUp":
+            case "Up":
+                event.preventDefault();
+                if (!open) this.OpenMenu();
+                else this.SetFocusedIndex(this.focusedIndex > 0 ? this.focusedIndex - 1 : last, true);
                 return;
-            }
-            SetFocusedIndex(focusedIndex > 0 ? focusedIndex - 1 : lastIndex, true);
-            return;
-        case "Home":
-            if (!open) return;
-            event.preventDefault();
-            SetFocusedIndex(0, true);
-            return;
-        case "End":
-            if (!open) return;
-            event.preventDefault();
-            SetFocusedIndex(lastIndex, true);
-            return;
-        case "Enter":
-            if (open && focusedIndex >= 0) {
+
+            case "Home":
+                if (!open) return;
                 event.preventDefault();
-                SelectIndex(focusedIndex);
-            }
-            return;
-        case " ":
-        case "Spacebar":
-            if (open && focusedIndex >= 0) {
+                this.SetFocusedIndex(0, true);
+                return;
+
+            case "End":
+                if (!open) return;
                 event.preventDefault();
-                SelectIndex(focusedIndex);
-            }
-            return;
-        case "Escape":
-        case "Esc":
-            if (open) {
-                event.preventDefault();
-                CloseMenu();
-            }
-            return;
-        case "Tab":
-            if (open) CloseMenu();
-            return;
-        default:
-            // Single-character keys: type-ahead jump to next match.
-            if (open && event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-                const target = FindByPrefix(event.key);
-                if (target !== -1) {
+                this.SetFocusedIndex(last, true);
+                return;
+
+            case "Enter":
+            case " ":
+            case "Spacebar":
+                if (open && this.focusedIndex >= 0) {
                     event.preventDefault();
-                    SetFocusedIndex(target, true);
+                    this.SelectIndex(this.focusedIndex);
                 }
-            }
+                return;
+
+            case "Escape":
+            case "Esc":
+                if (open) {
+                    event.preventDefault();
+                    this.CloseMenu();
+                }
+                return;
+
+            case "Tab":
+                if (open) this.CloseMenu();
+                return;
+
+            default:
+                if (open && this.IsTypeAheadKey(event)) {
+                    const target = this.FindByPrefix(event.key);
+                    if (target !== -1) {
+                        event.preventDefault();
+                        this.SetFocusedIndex(target, true);
+                    }
+                }
+        }
     }
-};
 
-const FindByPrefix = (char: string): number => {
-    const lower = char.toLowerCase();
-    const len = RoutineManager.activeDotRoutines.length;
-    const start = focusedIndex < 0 ? 0 : (focusedIndex + 1) % len;
-    for (let i = 0; i < len; i++) {
-        const idx = (start + i) % len;
-        const title = RoutineManager.activeDotRoutines[idx]?.title ?? "";
-        if (title.toLowerCase().startsWith(lower)) return idx;
+    private IsTypeAheadKey(event: KeyboardEvent): boolean {
+        return event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey;
     }
-    return -1;
-};
 
-const SelectIndex = (index: number): void => {
-    const routineSelected = new CustomEvent("Game:RoutineSelected", { detail: { index } });
-    window.dispatchEvent(routineSelected);
-    CloseMenu();
-};
-
-const SetFocusedIndex = (index: number, scrollIntoView: boolean): void => {
-    if (!menu || !trigger) return;
-    focusedIndex = index;
-    const items = menu.querySelectorAll<HTMLLIElement>("li[data-routine-index]");
-    items.forEach((item, i) => {
-        item.classList.toggle("focused", i === index);
-    });
-    const focused = items[index];
-    if (focused) {
-        trigger.setAttribute("aria-activedescendant", focused.id);
-        if (scrollIntoView) focused.scrollIntoView({ block: "nearest" });
-    } else {
-        trigger.removeAttribute("aria-activedescendant");
+    private FindByPrefix(char: string): number {
+        const lower = char.toLowerCase();
+        const len = RoutineManager.activeDotRoutines.length;
+        const start = this.focusedIndex < 0 ? 0 : (this.focusedIndex + 1) % len;
+        for (let i = 0; i < len; i++) {
+            const idx = (start + i) % len;
+            const title = RoutineManager.activeDotRoutines[idx]?.title ?? "";
+            if (title.toLowerCase().startsWith(lower)) return idx;
+        }
+        return -1;
     }
-};
-
-const ClearFocusedIndex = (): void => {
-    if (!menu || !trigger) return;
-    focusedIndex = -1;
-    menu.querySelectorAll<HTMLLIElement>("li[data-routine-index]").forEach(item => {
-        item.classList.remove("focused");
-    });
-    trigger.removeAttribute("aria-activedescendant");
-};
-
-const ToggleMenu = (): void => {
-    if (IsOpen()) CloseMenu();
-    else OpenMenu();
-};
-
-const IsOpen = (): boolean => {
-    return trigger?.getAttribute("aria-expanded") === "true";
-};
-
-const OpenMenu = (): void => {
-    if (!trigger || !menu) return;
-    trigger.setAttribute("aria-expanded", "true");
-    menu.hidden = false;
-    SetFocusedIndex(RoutineManager.currentRoutineIndex, true);
-};
-
-const CloseMenu = (): void => {
-    if (!trigger || !menu) return;
-    trigger.setAttribute("aria-expanded", "false");
-    menu.hidden = true;
-    ClearFocusedIndex();
-};
-
-const BuildMenuItems = (): void => {
-    if (!menu) return;
-    menu.innerHTML = "";
-    RoutineManager.activeDotRoutines.forEach((routine, index) => {
-        const item = document.createElement("li");
-        item.id = `routine-option-${index}`;
-        item.setAttribute("role", "option");
-        item.dataset.routineIndex = index.toString();
-        item.textContent = routine?.title ?? `Routine ${index + 1}`;
-        menu!.appendChild(item);
-    });
-};
-
-const UpdateActiveItem = (): void => {
-    if (!menu) return;
-    const items = menu.querySelectorAll<HTMLLIElement>("li[data-routine-index]");
-    items.forEach(item => {
-        const isActive = Number(item.dataset.routineIndex) === RoutineManager.currentRoutineIndex;
-        item.classList.toggle("active", isActive);
-        item.setAttribute("aria-selected", isActive ? "true" : "false");
-    });
-};
+}
