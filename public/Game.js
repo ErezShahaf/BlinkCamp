@@ -1,33 +1,19 @@
 import { Dot } from "./Dot/Dot.js";
 import { SubscribeToRoutineChangedEvent } from "./RoutineTitleFollower.js";
+import { SubscribeToRoutineMenu } from "./RoutineMenu.js";
 import { SubscribeToNotificationsButtonClick } from "./PushNotifications.js";
 const InitializeScene = () => {
     new Dot(document.getElementById("dot"));
     // TODO
     // Creat UIEventDispatcher class (component base type) and move them there, and change the name of this class to GameScene.
-    SetLeftArrowEvent();
-    SetRightArrowEvent();
     SetVelocityChangeEvent();
     SetRadiusChangeEvent();
     // SetReminderButtonEvent();
     // TODO
     // Create a component base class which has awake and update methods, and instantiate those classes instead.
+    SubscribeToRoutineMenu();
     SubscribeToRoutineChangedEvent();
     SubscribeToNotificationsButtonClick();
-};
-const SetLeftArrowEvent = () => {
-    const leftArrowClickEvent = new CustomEvent('Game:LeftArrowClick');
-    const leftArrow = document.querySelector(".arrow.left");
-    leftArrow.addEventListener("click", () => {
-        window.dispatchEvent(leftArrowClickEvent);
-    });
-};
-const SetRightArrowEvent = () => {
-    const rightArrowClickEvent = new CustomEvent('Game:RightArrowClick');
-    const rightArrow = document.querySelector(".arrow.right");
-    rightArrow.addEventListener("click", () => {
-        window.dispatchEvent(rightArrowClickEvent);
-    });
 };
 const SetVelocityChangeEvent = () => {
     const velocitySlider = document.getElementById("velocityslider");

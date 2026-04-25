@@ -29,33 +29,6 @@ body {
     transform: translate(-50%,-50%);
 }
 
-.arrow {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    position: relative;
-}
-
-.left {
-position: absolute;
-border-width: 10px 20px 10px 0;
-top: 85vh;
-left: calc(5vw + 120px);
-border-color: transparent #ffffff transparent transparent;
-}
-
-.right {
-position: absolute;
-border-width: 10px 0 10px 20px;
-top: 85vh;
-left: calc(5vw + 150px);
-border-color: transparent transparent transparent #ffffff;
-}
-
-.arrow:hover {
-transform: scale(1.2);
-}
-  
 .changeroutine 
 {
     font-family: Arial, Helvetica, sans-serif;
@@ -71,7 +44,7 @@ transform: scale(1.2);
     user-select: none;          /* Standard syntax */
 }
 
-.routinename 
+.routinename
 {
     font-family: Arial, Helvetica, sans-serif;
     position: absolute;
@@ -80,10 +53,104 @@ transform: scale(1.2);
     font-weight: bold;
     font-size: 15px;
     color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 220px;
+    text-align: left;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.routinename:hover
+{
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.routinename:focus
+{
+    outline: none;
+    border-color: #e2b714;
+}
+
+.routinename .routinelabel
+{
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.routinename .caret
+{
+    transition: transform 0.15s ease;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.routinename[aria-expanded="true"] .caret
+{
+    transform: rotate(180deg);
+}
+
+.routinemenu
+{
+    position: absolute;
+    top: calc(85vh + 30px);
+    left: 5vw;
+    transform: translateY(calc(-100% - 8px));
+    margin: 0;
+    padding: 4px 0;
+    list-style: none;
+    min-width: 240px;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: #2a2a2a;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    z-index: 10;
+}
+
+.routinemenu[hidden]
+{
+    display: none;
+}
+
+.routinemenu li
+{
+    padding: 8px 14px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.routinemenu li:hover
+{
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.routinemenu li.active
+{
+    background: rgba(226, 183, 20, 0.18);
+    color: #e2b714;
+}
+
+.routinemenu li.active::before
+{
+    content: "\2713  ";
 }
 
 .backgroundvideo 

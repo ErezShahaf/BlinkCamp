@@ -29,14 +29,16 @@
         <div class="dot" id="dot"></div>
     </div>
     <div class="ui">
-        <div class="arrow left"></div>
-        <div class="arrow right"></div>
         <div id="velocitytext">Speed</div>
         <input id="velocityslider" type="range" min="0.25" max="25" value="3" step="0.001">
         <div id="sizetext">Size</div>
         <input id="sizeslider" type="range" min="0.01" max="10" value="2" step="0.001">
         <div class="changeroutine">Change Routine</div>
-        <div class="routinename">Routine Name</div>
+        <button class="routinename" id="routine-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="routinelabel" id="current-routine-label">Routine Name</span>
+            <span class="caret" aria-hidden="true">&#9662;</span>
+        </button>
+        <ul class="routinemenu" id="routine-menu" role="listbox" hidden></ul>
         <!-- <div class="backgroundvideo">Background Video</div> -->
         <!-- <input type="checkbox" class="backgroundvideotick" checked></div> -->
         <!-- <div class="notifications">Set Daily Reminders</div>

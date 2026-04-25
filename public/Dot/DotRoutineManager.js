@@ -1,4 +1,5 @@
 import { DirectionChangingRotationsRoutine } from './Routines/DirectionChangingRotationsRoutine.js';
+import { DirectionChangingLeftRight } from './Routines/DirectionChangingLeftRight.js';
 import { PeekabooRoutine } from './Routines/PeekabooRoutine.js';
 import { InverseWaveRoutine } from './Routines/InverseWaveRoutine.js';
 import { CounterClockwiseRotationRoutine } from "./Routines/CounterClockwiseRotationRoutine.js";
@@ -17,6 +18,7 @@ const RoutineManager = {
         DirectionChangingRotationsRoutine,
         ElasticCollisionRoutine,
         LeftRightRoutine,
+        DirectionChangingLeftRight,
         UpDownRoutine,
         DiagonalUpwardRoutine,
         DiagonalDownwardRoutine,
@@ -26,14 +28,16 @@ const RoutineManager = {
     ],
     currentRoutineIndex: 0,
 };
-window.addEventListener('Game:LeftArrowClick', () => {
-    let newIndex = RoutineManager.currentRoutineIndex - 1;
-    newIndex = newIndex < 0 ? RoutineManager.activeDotRoutines.length - 1 : newIndex;
-    RoutineManager.currentRoutineIndex = newIndex;
-    window.dispatchEvent(RoutineChanged);
-});
-window.addEventListener('Game:RightArrowClick', () => {
-    RoutineManager.currentRoutineIndex = (RoutineManager.currentRoutineIndex + 1) % RoutineManager.activeDotRoutines.length;
+window.addEventListener('Game:RoutineSelected', (event) => {
+    var _a;
+    const requestedIndex = (_a = event.detail) === null || _a === void 0 ? void 0 : _a.index;
+    if (typeof requestedIndex !== 'number')
+        return;
+    if (requestedIndex < 0 || requestedIndex >= RoutineManager.activeDotRoutines.length)
+        return;
+    if (requestedIndex === RoutineManager.currentRoutineIndex)
+        return;
+    RoutineManager.currentRoutineIndex = requestedIndex;
     window.dispatchEvent(RoutineChanged);
 });
 export default RoutineManager;

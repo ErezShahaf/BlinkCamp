@@ -1,8 +1,8 @@
 import RoutineManager from "./Dot/DotRoutineManager.js";
 let routineNameText:HTMLElement;
-routineNameText = document.querySelector(".routinename") as HTMLInputElement;
+routineNameText = document.getElementById("current-routine-label") as HTMLElement;
 
-export const SubscribeToRoutineChangedEvent = () : void => 
+export const SubscribeToRoutineChangedEvent = () : void =>
 {
     UpdateTitle(); // Load the first title
     window.addEventListener('DotRoutineManager:RoutineChanged', () => {
@@ -10,7 +10,7 @@ export const SubscribeToRoutineChangedEvent = () : void =>
     })
 }
 
-const UpdateTitle = () : void => 
+const UpdateTitle = () : void =>
 {
-    routineNameText.innerHTML = RoutineManager.activeDotRoutines[RoutineManager.currentRoutineIndex].title;
+    routineNameText.textContent = RoutineManager.activeDotRoutines[RoutineManager.currentRoutineIndex].title;
 }

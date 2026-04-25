@@ -34,15 +34,12 @@ const RoutineManager: { activeDotRoutines: Array<IDotRoutine>, currentRoutineInd
 };
 
 
-window.addEventListener('Game:LeftArrowClick', () => {
-    let newIndex = RoutineManager.currentRoutineIndex - 1;
-    newIndex = newIndex < 0 ? RoutineManager.activeDotRoutines.length -1 : newIndex;
-    RoutineManager.currentRoutineIndex = newIndex;
-    window.dispatchEvent(RoutineChanged);
-})
-
-window.addEventListener('Game:RightArrowClick', () => {
-    RoutineManager.currentRoutineIndex = (RoutineManager.currentRoutineIndex + 1) % RoutineManager.activeDotRoutines.length;
+window.addEventListener('Game:RoutineSelected', (event: Event) => {
+    const requestedIndex = (event as CustomEvent).detail?.index;
+    if (typeof requestedIndex !== 'number') return;
+    if (requestedIndex < 0 || requestedIndex >= RoutineManager.activeDotRoutines.length) return;
+    if (requestedIndex === RoutineManager.currentRoutineIndex) return;
+    RoutineManager.currentRoutineIndex = requestedIndex;
     window.dispatchEvent(RoutineChanged);
 })
 
