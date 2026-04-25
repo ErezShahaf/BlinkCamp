@@ -137,15 +137,27 @@ body {
     user-select: none;
 }
 
-.routinemenu li:hover
+.routinemenu li:hover,
+.routinemenu li.focused
 {
     background: rgba(255, 255, 255, 0.08);
+}
+
+.routinemenu li.focused
+{
+    outline: 2px solid #e2b714;
+    outline-offset: -2px;
 }
 
 .routinemenu li.active
 {
     background: rgba(226, 183, 20, 0.18);
     color: #e2b714;
+}
+
+.routinemenu li.active.focused
+{
+    background: rgba(226, 183, 20, 0.28);
 }
 
 .routinemenu li.active::before

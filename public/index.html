@@ -34,11 +34,11 @@
         <div id="sizetext">Size</div>
         <input id="sizeslider" type="range" min="0.01" max="10" value="2" step="0.001">
         <div class="changeroutine">Change Routine</div>
-        <button class="routinename" id="routine-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+        <button class="routinename" id="routine-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="routine-menu" aria-label="Change routine">
             <span class="routinelabel" id="current-routine-label">Routine Name</span>
             <span class="caret" aria-hidden="true">&#9662;</span>
         </button>
-        <ul class="routinemenu" id="routine-menu" role="listbox" hidden></ul>
+        <ul class="routinemenu" id="routine-menu" role="listbox" aria-label="Routines" tabindex="-1" hidden></ul>
         <!-- <div class="backgroundvideo">Background Video</div> -->
         <!-- <input type="checkbox" class="backgroundvideotick" checked></div> -->
         <!-- <div class="notifications">Set Daily Reminders</div>
