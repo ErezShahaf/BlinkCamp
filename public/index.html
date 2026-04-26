@@ -29,14 +29,52 @@
         <div class="dot" id="dot"></div>
     </div>
     <div class="ui">
-        <div class="arrow left"></div>
-        <div class="arrow right"></div>
         <div id="velocitytext">Speed</div>
         <input id="velocityslider" type="range" min="0.25" max="25" value="3" step="0.001">
         <div id="sizetext">Size</div>
         <input id="sizeslider" type="range" min="0.01" max="10" value="2" step="0.001">
         <div class="changeroutine">Change Routine</div>
-        <div class="routinename">Routine Name</div>
+        <div class="arrow left"></div>
+        <div class="arrow right"></div>
+        <button class="routinename" id="routine-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="routine-menu" aria-label="Change routine">
+            <span class="routinelabel" id="current-routine-label">Routine Name</span>
+            <span class="caret" aria-hidden="true">&#9662;</span>
+        </button>
+        <ul class="routinemenu" id="routine-menu" role="listbox" aria-label="Routines" tabindex="-1" hidden></ul>
+        <section class="settings">
+            <button class="settingstrigger" id="settings-trigger" type="button" aria-expanded="false" aria-controls="settings-body">
+                <span class="settingstitle">Settings</span>
+                <span class="settingscaret" aria-hidden="true">&#9662;</span>
+            </button>
+            <div class="settingsbody" id="settings-body" hidden>
+                <div class="setting">
+                    <label class="settinglabel" for="colorpicker">Color</label>
+                    <input id="colorpicker" type="color" value="#e2b714">
+                </div>
+                <div class="setting">
+                    <label class="settinglabel" for="shapeselect">Shape</label>
+                    <select id="shapeselect">
+                        <option value="circle" selected>Circle</option>
+                        <option value="rounded">Rounded</option>
+                        <option value="square">Square</option>
+                        <option value="triangle">Triangle</option>
+                        <option value="diamond">Diamond</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label class="settinglabel" for="routinepicker">Routine Picker</label>
+                    <select id="routinepicker">
+                        <option value="menu" selected>Menu</option>
+                        <option value="arrows">Arrows</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label class="settinglabel" for="zenmode">Zen Mode</label>
+                    <input id="zenmode" type="checkbox" role="switch">
+                </div>
+                <button class="reset-defaults" id="reset-defaults" type="button">Reset to defaults</button>
+            </div>
+        </section>
         <!-- <div class="backgroundvideo">Background Video</div> -->
         <!-- <input type="checkbox" class="backgroundvideotick" checked></div> -->
         <!-- <div class="notifications">Set Daily Reminders</div>
@@ -48,6 +86,44 @@
             <img src="Assets/github-icon.svg" class="socialicon" id="github-icon" alt="Blinkcamp github repository icon">
         </a>
     </div>
+    <button id="zen-exit" class="zen-exit" type="button" aria-label="Exit zen mode" hidden>Exit Zen</button>
+    <!--
+        Apply persisted settings synchronously before first paint to avoid a
+        flash of default values. Runs before any deferred module script.
+        The full persistence pipeline (event subscriptions, replaying values
+        through Game:* events to sync Dot's internal state) still runs in
+        SettingsStore.ts after DOM is interactive.
+    -->
+    <script>
+    (function applyPersistedSettings() {
+        try {
+            const raw = localStorage.getItem('blinkcamp.settings');
+            if (!raw) return;
+            const s = JSON.parse(raw);
+
+            const dot = document.getElementById('dot');
+            if (dot) {
+                if (s.color) dot.style.setProperty('--dot-color', s.color);
+                if (s.shape) dot.dataset.shape = s.shape;
+                if (s.size !== undefined) dot.style.setProperty('--radius', s.size);
+            }
+
+            const byId = (id) => document.getElementById(id);
+            const setVal = (el, val) => { if (el && val !== undefined) el.value = val; };
+
+            setVal(byId('velocityslider'), s.velocity);
+            setVal(byId('sizeslider'), s.size);
+            setVal(byId('colorpicker'), s.color);
+            setVal(byId('shapeselect'), s.shape);
+            setVal(byId('routinepicker'), s.routineUi);
+
+            if (s.routineUi === 'arrows') document.body.dataset.routineUi = 'arrows';
+            if (s.zen) document.body.classList.add('zen');
+        } catch (e) {
+            // localStorage unavailable or value malformed — fall through to defaults.
+        }
+    })();
+    </script>
 </body>
 <script src="https://www.youtube.com/iframe_api"></script>
 <!-- <script src="./BackgroundVideo.js"></script> -->

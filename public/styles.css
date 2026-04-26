@@ -19,43 +19,98 @@ body {
     --x: 50;
     --y: 50;
     --radius: 2;
+    --dot-color: #e2b714;
     position: absolute;
-    background-color: #e2b714;
+    background-color: var(--dot-color);
     left: calc((var(--x) * 1vw));
     top: calc((var(--y) * 1vh));
-    border-radius: 50%;
+    border-radius: 50%; /* default = circle; overridden per [data-shape] below */
     width: calc(var(--radius) * 1vw);
     height: calc(var(--radius) * 1vw);
     transform: translate(-50%,-50%);
 }
 
-.arrow {
+.dot[data-shape="rounded"]
+{
+    border-radius: 20%;
+}
+
+.dot[data-shape="square"]
+{
+    border-radius: 0;
+}
+
+.dot[data-shape="triangle"]
+{
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.dot[data-shape="diamond"]
+{
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+/* Arrow-style routine picker — hidden unless body[data-routine-ui="arrows"]. */
+.arrow
+{
     width: 0;
     height: 0;
     border-style: solid;
     position: relative;
+    display: none;
+    cursor: pointer;
 }
 
-.left {
-position: absolute;
-border-width: 10px 20px 10px 0;
-top: 85vh;
-left: calc(5vw + 120px);
-border-color: transparent #ffffff transparent transparent;
+.arrow:hover
+{
+    transform: scale(1.2);
 }
 
-.right {
-position: absolute;
-border-width: 10px 0 10px 20px;
-top: 85vh;
-left: calc(5vw + 150px);
-border-color: transparent transparent transparent #ffffff;
+.arrow.left
+{
+    position: absolute;
+    border-width: 10px 20px 10px 0;
+    top: 85vh;
+    left: calc(5vw + 120px);
+    border-color: transparent #ffffff transparent transparent;
 }
 
-.arrow:hover {
-transform: scale(1.2);
+.arrow.right
+{
+    position: absolute;
+    border-width: 10px 0 10px 20px;
+    top: 85vh;
+    left: calc(5vw + 150px);
+    border-color: transparent transparent transparent #ffffff;
 }
-  
+
+body[data-routine-ui="arrows"] .arrow
+{
+    display: block;
+}
+
+/* In arrows mode, demote the routine name button to a static label and hide
+   its dropdown menu; the arrows alone drive selection. */
+body[data-routine-ui="arrows"] .routinename
+{
+    border-color: transparent;
+    cursor: default;
+    pointer-events: none;
+}
+
+body[data-routine-ui="arrows"] .routinename .caret
+{
+    display: none;
+}
+
+body[data-routine-ui="arrows"] .routinemenu
+{
+    display: none !important;
+}
+
+
 .changeroutine 
 {
     font-family: Arial, Helvetica, sans-serif;
@@ -71,7 +126,7 @@ transform: scale(1.2);
     user-select: none;          /* Standard syntax */
 }
 
-.routinename 
+.routinename
 {
     font-family: Arial, Helvetica, sans-serif;
     position: absolute;
@@ -80,10 +135,116 @@ transform: scale(1.2);
     font-weight: bold;
     font-size: 15px;
     color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 220px;
+    text-align: left;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.routinename:hover
+{
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.routinename:focus
+{
+    outline: none;
+    border-color: #e2b714;
+}
+
+.routinename .routinelabel
+{
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.routinename .caret
+{
+    transition: transform 0.15s ease;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.routinename[aria-expanded="true"] .caret
+{
+    transform: rotate(180deg);
+}
+
+.routinemenu
+{
+    position: absolute;
+    top: calc(85vh + 30px);
+    left: 5vw;
+    transform: translateY(calc(-100% - 8px));
+    margin: 0;
+    padding: 4px 0;
+    list-style: none;
+    min-width: 240px;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: #2a2a2a;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    z-index: 10;
+}
+
+.routinemenu[hidden]
+{
+    display: none;
+}
+
+.routinemenu li
+{
+    padding: 8px 14px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.routinemenu li:hover,
+.routinemenu li.focused
+{
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.routinemenu li.focused
+{
+    outline: 2px solid #e2b714;
+    outline-offset: -2px;
+}
+
+.routinemenu li.active
+{
+    background: rgba(226, 183, 20, 0.18);
+    color: #e2b714;
+}
+
+.routinemenu li.active.focused
+{
+    background: rgba(226, 183, 20, 0.28);
+}
+
+.routinemenu li.active::before
+{
+    content: "\2713  ";
 }
 
 .backgroundvideo 
@@ -191,6 +352,245 @@ transform: scale(1.2);
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
     user-select: none;          /* Standard syntax */
+}
+
+.settings
+{
+    position: absolute;
+    top: calc(85vh + 65px); /* sit below the routine name (top: 85vh + 30px) */
+    left: 5vw;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.settingstrigger
+{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    background: transparent;
+    color: white;
+    font-family: inherit;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+.settingstrigger:hover
+{
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.settingstrigger:focus
+{
+    outline: none;
+    border-color: #e2b714;
+}
+
+.settingstitle
+{
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.8;
+}
+
+.settingscaret
+{
+    font-size: 12px;
+    line-height: 1;
+    transition: transform 0.15s ease;
+}
+
+.settingstrigger[aria-expanded="true"] .settingscaret
+{
+    transform: rotate(180deg);
+}
+
+.settingsbody
+{
+    position: absolute;
+    bottom: calc(100% + 6px); /* float above the trigger */
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 14px;
+    min-width: 200px;
+    background: #2a2a2a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    z-index: 5;
+}
+
+.settingsbody[hidden]
+{
+    display: none;
+}
+
+.setting
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.settinglabel
+{
+    flex: 0 0 70px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.settings input[type="color"]
+{
+    width: 40px;
+    height: 22px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.settings input[type="color"]::-webkit-color-swatch-wrapper
+{
+    padding: 0;
+}
+
+.settings input[type="color"]::-webkit-color-swatch
+{
+    border: none;
+    border-radius: 2px;
+}
+
+.settings input[type="color"]::-moz-color-swatch
+{
+    border: none;
+    border-radius: 2px;
+}
+
+.settings select
+{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 6px 28px 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    background-color: transparent;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='white'%3E%3Cpath d='M0 0 L5 6 L10 0 Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    color: white;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.settings select:hover
+{
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.settings select:focus
+{
+    outline: none;
+    border-color: #e2b714;
+}
+
+/* Best-effort styling for the dropdown popup. Native option styling is
+   browser/OS controlled — Firefox and Chromium honor these on most
+   platforms, Safari/macOS uses the system popup regardless. */
+.settings select option
+{
+    background-color: #2a2a2a;
+    color: white;
+}
+
+.settings input[type="checkbox"]
+{
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #e2b714;
+}
+
+.reset-defaults
+{
+    margin-top: 4px;
+    padding: 5px 8px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: inherit;
+    font-size: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.reset-defaults:hover,
+.reset-defaults:focus
+{
+    color: white;
+    border-color: rgba(255, 255, 255, 0.4);
+    outline: none;
+}
+
+body.zen .ui > *
+{
+    display: none;
+}
+
+.zen-exit
+{
+    display: none;
+}
+
+body.zen .zen-exit
+{
+    display: inline-flex;
+    align-items: center;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, background 0.2s ease;
+    z-index: 100;
+}
+
+body.zen .zen-exit:hover,
+body.zen .zen-exit:focus
+{
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.16);
+    outline: none;
 }
 
 .backvideoytexplanation

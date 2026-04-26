@@ -13,7 +13,7 @@ let currentPolarity:DirectionChangePolarity = 1;
 const minTimePerDirectionChange: number = 0.5;
 const maxTimePerDirectionChange: number = 2;
 
-export const DirectionChangingRotationsRoutine : IDotRoutine = {
+export const DirectionChangingLeftRight : IDotRoutine = {
   Execute: function(dot: Dot) {
     const newPhaseAngle:number = dot.dTime * dot.velocity + lastPhaseAngle;
     dot.X = dot.halfScreen + (Amplitude * Math.cos(newPhaseAngle));
