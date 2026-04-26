@@ -17,12 +17,31 @@ export class Dot extends GameElement {
         window.addEventListener('Game:RadiusValueChanged', (event) => {
             this.Radius = event.detail.radius;
         });
+        window.addEventListener('Game:ColorValueChanged', (event) => {
+            this.Color = event.detail.color;
+        });
+        window.addEventListener('Game:ShapeValueChanged', (event) => {
+            this.Shape = event.detail.shape;
+        });
     }
     get Radius() {
         return parseFloat(getComputedStyle(this.dotElement).getPropertyValue("--radius"));
     }
     set Radius(value) {
         this.dotElement.style.setProperty("--radius", value.toString());
+    }
+    get Color() {
+        return getComputedStyle(this.dotElement).getPropertyValue("--dot-color").trim();
+    }
+    set Color(value) {
+        this.dotElement.style.setProperty("--dot-color", value);
+    }
+    get Shape() {
+        var _a;
+        return (_a = this.dotElement.dataset.shape) !== null && _a !== void 0 ? _a : "circle";
+    }
+    set Shape(value) {
+        this.dotElement.dataset.shape = value;
     }
     Update(dTime) {
         this.dTime = dTime;

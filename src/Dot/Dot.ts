@@ -24,6 +24,14 @@ export class Dot extends GameElement
         window.addEventListener('Game:RadiusValueChanged', (event: Event) => {
             this.Radius = (event as CustomEvent).detail.radius;
           });
+
+        window.addEventListener('Game:ColorValueChanged', (event: Event) => {
+            this.Color = (event as CustomEvent).detail.color;
+          });
+
+        window.addEventListener('Game:ShapeValueChanged', (event: Event) => {
+            this.Shape = (event as CustomEvent).detail.shape;
+          });
           
     }
 
@@ -35,6 +43,26 @@ export class Dot extends GameElement
     set Radius(value:number)
     {
         this.dotElement.style.setProperty("--radius", value.toString());
+    }
+
+    get Color():string
+    {
+        return getComputedStyle(this.dotElement).getPropertyValue("--dot-color").trim();
+    }
+
+    set Color(value:string)
+    {
+        this.dotElement.style.setProperty("--dot-color", value);
+    }
+
+    get Shape():string
+    {
+        return this.dotElement.dataset.shape ?? "circle";
+    }
+
+    set Shape(value:string)
+    {
+        this.dotElement.dataset.shape = value;
     }
 
     Update(dTime:number):void 
