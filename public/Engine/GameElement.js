@@ -2,21 +2,29 @@ export class GameElement {
     constructor(htmlElement, gameElementInstance) {
         this.htmlElement = htmlElement;
         this.gameElementInstance = gameElementInstance;
+        // Seed the cache from the CSS-declared defaults (or any inline style
+        // already applied) so initial reads match what's painted.
+        const initialX = parseFloat(getComputedStyle(htmlElement).getPropertyValue("--x"));
+        const initialY = parseFloat(getComputedStyle(htmlElement).getPropertyValue("--y"));
+        this._x = isNaN(initialX) ? 50 : initialX;
+        this._y = isNaN(initialY) ? 50 : initialY;
         window.addEventListener('GameLoop:Update', (event) => {
             const dTime = event.detail.dTime;
             this.Update(dTime);
         });
     }
     get X() {
-        return parseFloat(getComputedStyle(this.htmlElement).getPropertyValue("--x"));
+        return this._x;
     }
     set X(value) {
+        this._x = value;
         this.htmlElement.style.setProperty("--x", value.toString());
     }
     get Y() {
-        return parseFloat(getComputedStyle(this.htmlElement).getPropertyValue("--y"));
+        return this._y;
     }
     set Y(value) {
+        this._y = value;
         this.htmlElement.style.setProperty("--y", value.toString());
     }
     Update(dTime) {

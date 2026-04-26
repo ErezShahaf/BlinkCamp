@@ -21,12 +21,17 @@ body {
     --radius: 2;
     position: absolute;
     background-color: #e2b714;
-    left: calc((var(--x) * 1vw));
-    top: calc((var(--y) * 1vh));
+    left: 0;
+    top: 0;
     border-radius: 50%;
     width: calc(var(--radius) * 1vw);
     height: calc(var(--radius) * 1vw);
-    transform: translate(-50%,-50%);
+    /* Position via transform (composited on the GPU) instead of left/top
+       (which forces layout every frame). The second translate centers the
+       dot on (--x, --y) since percent values resolve against the element's
+       own size. */
+    transform: translate(calc(var(--x) * 1vw), calc(var(--y) * 1vh)) translate(-50%, -50%);
+    will-change: transform;
 }
 
 .arrow {
