@@ -1,6 +1,7 @@
 import { Dot } from "./Dot/Dot.js";
 import { SubscribeToRoutineChangedEvent } from "./RoutineTitleFollower.js";
 import { SubscribeToNotificationsButtonClick } from "./PushNotifications.js";
+import { InitializeSettings } from "./Settings.js";
 const InitializeScene = () => {
     new Dot(document.getElementById("dot"));
     // TODO
@@ -9,6 +10,7 @@ const InitializeScene = () => {
     SetRightArrowEvent();
     SetVelocityChangeEvent();
     SetRadiusChangeEvent();
+    InitializeSettings();
     // SetReminderButtonEvent();
     // TODO
     // Create a component base class which has awake and update methods, and instantiate those classes instead.

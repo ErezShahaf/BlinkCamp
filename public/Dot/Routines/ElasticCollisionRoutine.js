@@ -4,16 +4,20 @@ let velocityX = Math.cos(randomPhaseAngleInRadians) * elasticCollisionMultiplier
 let velocityY = Math.sin(randomPhaseAngleInRadians) * elasticCollisionMultiplier;
 export const ElasticCollisionRoutine = {
     Execute: function (dot) {
-        dot.X += velocityX * dot.velocity;
-        dot.Y += velocityY * dot.velocity;
-        if (dot.Y + dot.Radius >= 100 || dot.Y - dot.Radius <= 0) {
-            velocityY = -velocityY;
-            dot.Y += velocityY * dot.velocity * dot.dTime;
+        let x = dot.X + velocityX * dot.velocity;
+        let y = dot.Y + velocityY * dot.velocity;
+        // Bounce when the dot's edge reaches the screen edge. Clamp to the bounds so the dot
+        // never ends up partly off-screen (or stuck flipping direction outside them after a resize).
+        if (y >= dot.MaxY || y <= dot.MinY) {
+            velocityY = y >= dot.MaxY ? -Math.abs(velocityY) : Math.abs(velocityY);
+            y = Math.min(Math.max(y, dot.MinY), dot.MaxY);
         }
-        if (dot.X + dot.Radius >= 100 || dot.X - dot.Radius <= 0) {
-            velocityX = -velocityX;
-            dot.X += velocityX * dot.velocity * dot.dTime;
+        if (x >= dot.MaxX || x <= dot.MinX) {
+            velocityX = x >= dot.MaxX ? -Math.abs(velocityX) : Math.abs(velocityX);
+            x = Math.min(Math.max(x, dot.MinX), dot.MaxX);
         }
+        dot.X = x;
+        dot.Y = y;
     },
     title: 'DVD',
     duration: 30,
