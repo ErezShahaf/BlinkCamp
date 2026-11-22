@@ -1,5 +1,6 @@
 import { Dot } from "./Dot/Dot.js";
 import { SubscribeToRoutineChangedEvent } from "./RoutineTitleFollower.js";
+import { InitializeSessionTimer } from "./SessionTimer.js";
 import { SubscribeToNotificationsButtonClick } from "./PushNotifications.js";
 const InitializeScene = () => {
     new Dot(document.getElementById("dot"));
@@ -7,6 +8,7 @@ const InitializeScene = () => {
     // Creat UIEventDispatcher class (component base type) and move them there, and change the name of this class to GameScene.
     SetLeftArrowEvent();
     SetRightArrowEvent();
+    InitializeSessionTimer();
     SetVelocityChangeEvent();
     SetRadiusChangeEvent();
     // SetReminderButtonEvent();

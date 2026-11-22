@@ -1,4 +1,5 @@
 import { GameElement } from "../Engine/GameElement.js";
+import { IsSessionRunning } from "../SessionTimer.js";
 import "../Utils/NumberUtils.js";
 import RoutineManager from "./DotRoutineManager.js";
 export class Dot extends GameElement {
@@ -25,6 +26,10 @@ export class Dot extends GameElement {
         this.dotElement.style.setProperty("--radius", value.toString());
     }
     Update(dTime) {
+        // Paused, or a timed session has finished: leave the dot where it is.
+        if (!IsSessionRunning()) {
+            return;
+        }
         this.dTime = dTime;
         RoutineManager.activeDotRoutines[RoutineManager.currentRoutineIndex].Execute(this);
     }
