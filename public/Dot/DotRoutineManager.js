@@ -1,4 +1,5 @@
 import { DirectionChangingRotationsRoutine } from './Routines/DirectionChangingRotationsRoutine.js';
+import { DirectionChangingLeftRight } from './Routines/DirectionChangingLeftRight.js';
 import { PeekabooRoutine } from './Routines/PeekabooRoutine.js';
 import { InverseWaveRoutine } from './Routines/InverseWaveRoutine.js';
 import { CounterClockwiseRotationRoutine } from "./Routines/CounterClockwiseRotationRoutine.js";
@@ -17,6 +18,7 @@ const RoutineManager = {
         DirectionChangingRotationsRoutine,
         ElasticCollisionRoutine,
         LeftRightRoutine,
+        DirectionChangingLeftRight,
         UpDownRoutine,
         DiagonalUpwardRoutine,
         DiagonalDownwardRoutine,
@@ -25,6 +27,12 @@ const RoutineManager = {
         PeekabooRoutine
     ],
     currentRoutineIndex: 0,
+};
+// Jump straight to a routine (used by the routine menu and Shuffle).
+export const SelectRoutine = (index) => {
+    const count = RoutineManager.activeDotRoutines.length;
+    RoutineManager.currentRoutineIndex = ((index % count) + count) % count;
+    window.dispatchEvent(RoutineChanged);
 };
 window.addEventListener('Game:LeftArrowClick', () => {
     let newIndex = RoutineManager.currentRoutineIndex - 1;

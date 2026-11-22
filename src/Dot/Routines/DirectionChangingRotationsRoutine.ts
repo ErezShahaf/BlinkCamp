@@ -2,7 +2,6 @@ import { Dot } from "../Dot";
 import { IDotRoutine } from "../IDotRoutine.js";
 import { GetRandomNumberInBetween } from "../../Utils/NumberUtils.js";
 
-const Amplitude = 25;
 let lastPhaseAngle: number = 0;
 
 let currentDirectionChangeTime: number = 0;
@@ -16,8 +15,8 @@ const maxTimePerDirectionChange: number = 2;
 export const DirectionChangingRotationsRoutine : IDotRoutine = {
   Execute: function(dot: Dot) {
     const newPhaseAngle:number = currentPolarity * dot.dTime * dot.velocity + lastPhaseAngle;
-    dot.X = dot.halfScreen + (Amplitude * Math.cos(newPhaseAngle));
-    dot.Y = dot.halfScreen + (Amplitude * Math.sin(newPhaseAngle));
+    dot.X = dot.halfScreen + (dot.AmplitudeX * Math.cos(newPhaseAngle));
+    dot.Y = dot.halfScreen + (dot.AmplitudeY * Math.sin(newPhaseAngle));
     lastPhaseAngle = newPhaseAngle % (2 * Math.PI);
 
     if(bHasActiveDirectionChangeTimer)

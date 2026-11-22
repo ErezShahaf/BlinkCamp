@@ -2,16 +2,89 @@
 {
     box-sizing: border-box;
 }
-:root 
+/* ---------- Color themes ----------
+   Classic is the default. Other themes override these variables via [data-theme] on <html>.
+   A custom dot color (color picker) is set inline as --dot-color on <html>. */
+:root
 {
-    --hue: 0;
-    --saturation: 0%;
-    --background-color: hsl(var(--hue), var(--saturation), 5%);
-    --dot-color: hsl(var(--hue), var(--saturation), 100%);
+    --background-color: #1e1e1e;
+    --dot-color: #e2b714;
+    --ui-text: #ffffff;
+    --accent: #e2b714;
+    --ui-line: rgba(255, 255, 255, 0.35);
+    --icon-filter: brightness(10000%) saturate(0%);
 }
+
+:root[data-theme="midnight"]
+{
+    --background-color: #0e1726;
+    --dot-color: #4fd1c5;
+    --ui-text: #e6edf7;
+    --accent: #4fd1c5;
+}
+
+:root[data-theme="forest"]
+{
+    --background-color: #142019;
+    --dot-color: #f4a259;
+    --ui-text: #e8efe9;
+    --accent: #f4a259;
+}
+
+:root[data-theme="paper"]
+{
+    --background-color: #f1ede4;
+    --dot-color: #c2412d;
+    --ui-text: #2a2622;
+    --accent: #c2412d;
+    --ui-line: rgba(0, 0, 0, 0.3);
+    --icon-filter: brightness(0) saturate(0%);
+}
+
+:root[data-theme="contrast"]
+{
+    --background-color: #000000;
+    --dot-color: #ffffff;
+    --ui-text: #ffffff;
+    --accent: #ffffff;
+    --ui-line: rgba(255, 255, 255, 0.6);
+}
+
+/* Dot color and shape. (Kept separate from the .dot block below so position/size rules stay untouched.) */
+.game .dot
+{
+    background-color: var(--dot-color);
+}
+
+.game .dot.shape-square,
+.shapebutton[data-shape="square"]::before
+{
+    border-radius: 12%;
+}
+
+.game .dot.shape-diamond,
+.shapebutton[data-shape="diamond"]::before
+{
+    border-radius: 0;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.game .dot.shape-ring
+{
+    background-color: transparent;
+    box-shadow: inset 0 0 0 calc(var(--radius) * 0.22vw) var(--dot-color);
+}
+
+.shapebutton[data-shape="ring"]::before
+{
+    background-color: transparent;
+    box-shadow: inset 0 0 0 3px var(--ui-text);
+}
+
 body {
     margin: 0;
-    background-color: #1e1e1e;
+    background-color: var(--background-color);
+    transition: background-color 0.3s ease;
     overflow: hidden;
 }
 .dot 
@@ -21,219 +94,1047 @@ body {
     --radius: 2;
     position: absolute;
     background-color: #e2b714;
-    left: calc((var(--x) * 1vw));
-    top: calc((var(--y) * 1vh));
+    left: 0;
+    top: 0;
     border-radius: 50%;
     width: calc(var(--radius) * 1vw);
     height: calc(var(--radius) * 1vw);
-    transform: translate(-50%,-50%);
+    /* Positioned with transform rather than left/top so moving the dot never triggers layout. */
+    transform: translate(calc(var(--x) * 1vw - 50%), calc(var(--y) * 1vh - 50%));
+    will-change: transform;
 }
 
-.arrow {
-    width: 0;
-    height: 0;
-    border-style: solid;
+/* ---------- Interface tokens ----------
+   Derived from the theme variables above, so every theme styles the dock, menus and panel. */
+:root
+{
+    --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --surface: color-mix(in srgb, var(--background-color) 76%, transparent);
+    --surface-solid: color-mix(in srgb, var(--background-color) 93%, var(--ui-text) 7%);
+    --surface-raised: color-mix(in srgb, var(--background-color) 82%, var(--ui-text) 18%);
+    --text-muted: color-mix(in srgb, var(--ui-text) 72%, transparent);
+    --line: color-mix(in srgb, var(--ui-text) 14%, transparent);
+    --hover: color-mix(in srgb, var(--ui-text) 9%, transparent);
+    --press: color-mix(in srgb, var(--ui-text) 15%, transparent);
+    --accent-soft: color-mix(in srgb, var(--accent) 18%, transparent);
+    --shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6), 0 2px 8px -2px rgb(0 0 0 / 0.3);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --radius-lg: 18px;
+    --radius-md: 14px;
+    --radius-sm: 9px;
+}
+
+:root[data-theme="paper"]
+{
+    --shadow: 0 18px 40px -18px rgb(60 40 20 / 0.3), 0 2px 8px -2px rgb(60 40 20 / 0.12);
+}
+
+body
+{
+    font-family: var(--font-ui);
+    color: var(--ui-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection
+{
+    background: var(--accent);
+    color: var(--background-color);
+}
+
+:focus-visible
+{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+button
+{
+    font: inherit;
+    color: inherit;
+}
+
+kbd
+{
+    display: inline-block;
+    padding: 2px 6px;
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    background: var(--hover);
+    color: var(--ui-text);
+    font: 600 11px/1.3 var(--font-ui);
+}
+
+.icon
+{
+    flex: none;
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ---------- Dock ---------- */
+.dock
+{
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    translate: -50% 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    max-width: calc(100vw - 24px);
+    padding: 6px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    /* The dot passes behind the dock: the blur keeps it visible as a soft glow instead of hard-cutting it. */
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: var(--shadow);
+}
+
+.dock-group
+{
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
 }
 
-.left {
-position: absolute;
-border-width: 10px 20px 10px 0;
-top: 85vh;
-left: calc(5vw + 120px);
-border-color: transparent #ffffff transparent transparent;
-}
-
-.right {
-position: absolute;
-border-width: 10px 0 10px 20px;
-top: 85vh;
-left: calc(5vw + 150px);
-border-color: transparent transparent transparent #ffffff;
-}
-
-.arrow:hover {
-transform: scale(1.2);
-}
-  
-.changeroutine 
+.dock-divider
 {
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute;
-    top: 85vh;
-    left: 5vw;
-    font-weight: bold;
+    flex: none;
+    width: 1px;
+    height: 20px;
+    margin: 0 6px;
+    background: var(--line);
+}
+
+.iconbutton
+{
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.iconbutton:hover
+{
+    background: var(--hover);
+    color: var(--ui-text);
+}
+
+.iconbutton:active,
+.iconbutton[aria-expanded="true"]
+{
+    background: var(--press);
+    color: var(--ui-text);
+}
+
+.iconbutton[aria-pressed="true"]
+{
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.iconbutton:disabled
+{
+    opacity: 0.4;
+    background: transparent;
+    cursor: default;
+}
+
+/* Pause shows a pause icon while running and a play icon while paused. */
+#sessionpause .icon
+{
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    stroke: none;
+}
+
+#sessionpause .icon-play,
+#sessionpause[data-state="paused"] .icon-pause
+{
+    display: none;
+}
+
+#sessionpause[data-state="paused"] .icon-play
+{
+    display: block;
+}
+
+#sessionpause[data-state="paused"]
+{
+    color: var(--accent);
+}
+
+.routinebutton,
+.timebutton
+{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    height: 36px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.routinebutton
+{
+    max-width: 260px;
+    padding: 0 8px 0 12px;
+    color: var(--ui-text);
     font-size: 14px;
-    color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
+    font-weight: 600;
+    letter-spacing: -0.005em;
 }
 
-.routinename 
+.routinebutton .routinename
 {
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute;
-    top: calc(85vh + 30px);
-    left: 5vw;
-    font-weight: bold;
-    font-size: 15px;
-    color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-.backgroundvideo 
+.routinebutton .icon,
+.timebutton .icon
 {
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute;
-    top: calc(85vh + 60px);
-    left: 5vw;
-    font-weight: bold;
-    font-size: 15px;
-    color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
-}
-
-.backgroundvideotick 
-{
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute;
-    top: calc(85vh + 60px);
-    left: calc(5vw + 150px);
-    font-weight: bold;
-    font-size: 15px;
-    color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
-}
-
-.notifications 
-{
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute;
-    top: calc(85vh + 60px);
-    left: 5vw;
-    font-weight: bold;
-    font-size: 15px;
-    color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
-}
-
-#notifications-button {
-    left: calc(5vw + 155px);
     width: 15px;
     height: 15px;
-    background-color: white;
-    border: none;
+    color: var(--text-muted);
+    transition: rotate 0.25s var(--ease-out);
+}
+
+.routinebutton:hover,
+.timebutton:hover
+{
+    background: var(--hover);
+}
+
+.routinebutton[aria-expanded="true"],
+.timebutton[aria-expanded="true"]
+{
+    background: var(--press);
+}
+
+.routinebutton[aria-expanded="true"] .icon,
+.timebutton[aria-expanded="true"] .icon
+{
+    rotate: 180deg;
+}
+
+/* Routine picker: "Menu" mode hides the arrows; "Arrows" mode turns the name into a plain label. */
+.dock[data-picker="dropdown"] .arrowonly
+{
+    display: none;
+}
+
+.dock[data-picker="arrows"] .routinebutton
+{
+    padding: 0 6px;
+    background: transparent;
+    cursor: default;
+}
+
+.dock[data-picker="arrows"] .routinebutton .icon
+{
+    display: none;
+}
+
+.timebutton
+{
+    padding: 0 8px 0 6px;
+}
+
+#sessiontime
+{
+    min-width: 5ch;
+    color: var(--ui-text);
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+#sessionmode
+{
+    color: var(--text-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* Timed sessions: a hairline along the dock's bottom edge fills up as the session runs. */
+.sessionprogress
+{
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 2px;
+    height: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--line);
+    pointer-events: none;
+}
+
+#sessionprogressfill
+{
+    height: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1s linear;
+}
+
+/* ---------- Popovers (menus and the settings panel) ---------- */
+.popover
+{
+    position: absolute;
+    z-index: 20;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-solid);
+    box-shadow: var(--shadow);
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px) scale(0.98);
+    filter: blur(4px);
+    transition:
+        opacity 0.18s var(--ease-out),
+        transform 0.28s var(--ease-out),
+        filter 0.28s var(--ease-out),
+        visibility 0s linear 0.28s;
+}
+
+.popover.open
+{
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    filter: none;
+    transition-delay: 0s;
+}
+
+.menu
+{
+    bottom: calc(100% + 16px);
+    left: 0;
+    min-width: 230px;
+    max-height: min(60vh, 440px);
+    margin: 0;
+    padding: 6px;
+    overflow-y: auto;
+    list-style: none;
+    transform-origin: bottom left;
+}
+
+.menu li
+{
+    margin: 0;
+}
+
+.menu button
+{
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 8px 12px 8px 30px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ui-text);
+    font-size: 14px;
+    text-align: left;
+    white-space: nowrap;
     cursor: pointer;
-    border-radius: 10%;
-    position:relative;
 }
 
-#notifications-button:hover {
-    scale: 1.25;
-}
-
-
-#sizeslider
+.menu button:hover
 {
-    position:absolute;
-    top: calc(85vh - 30px);
-    width: 120px;
-    left: calc(5vw + 50px);
+    background: var(--hover);
 }
 
-#sizetext
+.menu button:focus-visible
 {
-    font-family: Arial, Helvetica, sans-serif;
+    outline: none;
+    background: var(--hover);
+    box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.menu button[aria-checked="true"]
+{
+    font-weight: 600;
+}
+
+.menu button[aria-checked="true"]::before
+{
+    content: "";
     position: absolute;
-    top: calc(85vh - 30px);
-    left: 5vw;
-    font-weight: bold;
+    left: 12px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    margin-top: -3.5px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.menu .hint
+{
+    margin-left: auto;
+    padding-left: 16px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.sessionmenu
+{
+    min-width: 210px;
+}
+
+/* ---------- Settings panel ---------- */
+.settingspanel
+{
+    position: fixed;
+    left: 50%;
+    bottom: 86px;
+    translate: -50% 0;
+    z-index: 15;
+    width: min(420px, calc(100vw - 24px));
+    max-height: calc(100vh - 110px);
+    padding: 0 20px 16px;
+    overflow-y: auto;
+    border-radius: var(--radius-lg);
+    transform-origin: bottom center;
+}
+
+.panelheader
+{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 -8px 0 0;
+    padding: 14px 0 10px;
+    background: var(--surface-solid);
+}
+
+.panelheader h2
+{
+    margin: 0;
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+}
+
+.panelsection
+{
+    padding: 16px 0 14px;
+    border-top: 1px solid var(--line);
+}
+
+.panelsection h3
+{
+    margin: 0 0 8px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.field
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 38px;
     font-size: 14px;
-    color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
 }
 
-#velocityslider
+.fieldlabel
 {
-    position:absolute;
-    top: calc(85vh - 60px);
-    width: 120px;
-    left: calc(5vw + 50px);
+    flex: none;
+    width: 112px;
 }
 
-#velocitytext
+.fieldvalue
 {
-    font-family: Arial, Helvetica, sans-serif;
+    min-width: 4ch;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.field input[type="range"]
+{
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.fieldnote
+{
+    margin: 12px 0 0;
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.themeswatches,
+.shapebuttons
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.themeswatch
+{
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--swatch-bg) 50%, var(--swatch-dot) 50%);
+    box-shadow: 0 0 0 1px var(--line);
+    cursor: pointer;
+    transition: transform 0.15s var(--ease-out), box-shadow 0.15s ease;
+}
+
+.themeswatch:hover
+{
+    transform: scale(1.08);
+}
+
+.themeswatch.selected
+{
+    border-color: var(--surface-solid);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+#dotcolor
+{
+    flex: none;
+    width: 34px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+}
+
+#dotcolor::-webkit-color-swatch-wrapper { padding: 3px; }
+#dotcolor::-webkit-color-swatch { border: none; border-radius: 5px; }
+#dotcolor::-moz-color-swatch { border: none; border-radius: 5px; }
+
+.shapebutton
+{
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.shapebutton::before
+{
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.shapebutton[data-shape="ring"]::before
+{
+    background-color: transparent;
+    box-shadow: inset 0 0 0 2.5px currentColor;
+}
+
+.shapebutton:hover
+{
+    background: var(--hover);
+    color: var(--ui-text);
+}
+
+.shapebutton.selected
+{
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.segmented
+{
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 10px;
+    background: var(--hover);
+}
+
+.segmented button
+{
+    padding: 5px 14px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.segmented button.selected
+{
+    background: var(--surface-raised);
+    color: var(--ui-text);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+}
+
+.fieldhint
+{
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.field.disabled
+{
+    opacity: 0.45;
+}
+
+.field.disabled input
+{
+    cursor: default;
+}
+
+/* On/off switch built from a native checkbox (keeps keyboard and screen reader behaviour). */
+.switch
+{
+    flex: none;
+    position: relative;
+    width: 36px;
+    height: 20px;
+    margin: 0;
+    border-radius: 999px;
+    background: var(--press);
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.switch::after
+{
+    content: "";
     position: absolute;
-    top: calc(85vh - 60px);
-    left: 5vw;
-    font-weight: bold;
-    font-size: 14px;
-    color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--ui-text);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+    transition: translate 0.2s var(--ease-out);
 }
 
-.backvideoytexplanation
+.switch:checked
 {
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute;
-    top: calc(85vh + 90px);
-    left: 5vw;
-    font-size: 10px;
-    color: white;
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
+    background: var(--accent);
 }
 
-
-.socialicon 
+.switch:checked::after
 {
-    position: absolute;
-    top: 85vh;
-    right: 5vw;
-    width: 50px;
-    filter: brightness(10000%) saturate(0%);
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
+    translate: 16px 0;
+    background: var(--background-color);
+}
+
+.panelfooter
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+}
+
+.textbutton
+{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 12px 0 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ui-text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.textbutton .icon
+{
+    width: 16px;
+    height: 16px;
+    transition: rotate 0.6s var(--ease-out);
+}
+
+.textbutton:hover
+{
+    background: var(--hover);
+}
+
+.textbutton.done
+{
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+    color: var(--accent);
+}
+
+.textbutton.done .icon
+{
+    rotate: -360deg;
+}
+
+.sociallinks
+{
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+}
+
+.sociallinks a
+{
+    color: var(--text-muted);
+    text-decoration: none;
+    text-underline-offset: 3px;
+}
+
+.sociallinks a:hover
+{
+    color: var(--ui-text);
+    text-decoration: underline;
+}
+
+/* ---------- Social icons (wide screens; the settings panel links to them too) ---------- */
+.socialicons
+{
+    position: fixed;
+    right: 24px;
+    bottom: 30px;
+    z-index: 5;
+    display: flex;
+    gap: 16px;
+}
+
+.socialicon
+{
+    display: block;
+    width: 22px;
+    height: 22px;
+    filter: var(--icon-filter);
+    opacity: 0.5;
     -webkit-user-drag: none;
-}
-.socialicon:hover 
-{
-    transform: scale(1.2);
+    user-select: none;
+    transition: opacity 0.15s ease;
 }
 
-#github-icon 
+.socialicons a:hover .socialicon
 {
-    right: calc(5vw + 85px);
+    opacity: 1;
 }
 
-#kofi-icon 
+/* ---------- Zen mode ---------- */
+.ui
 {
-    right: calc(5vw + 170px);
+    transition: opacity 0.45s var(--ease-out), visibility 0s linear 0s;
+}
+
+body.zen .ui
+{
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.45s var(--ease-out), visibility 0s linear 0.45s;
+}
+
+body.zen.idle
+{
+    cursor: none;
+}
+
+.zenexit
+{
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 8px 0 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s, color 0.15s ease;
+}
+
+.zenexit .icon
+{
+    width: 14px;
+    height: 14px;
+}
+
+body.zen .zenexit
+{
+    opacity: 0.85;
+    visibility: visible;
+    transition: opacity 0.3s ease 0.2s, visibility 0s, color 0.15s ease;
+}
+
+body.zen .zenexit:hover
+{
+    opacity: 1;
+    color: var(--ui-text);
+}
+
+body.zen.idle .zenexit
+{
+    opacity: 0;
+}
+
+/* ---------- Session timer: paused dot and the completion card ---------- */
+.game .dot
+{
+    transition: opacity 0.4s ease;
+}
+
+.game .dot.resting
+{
+    opacity: 0.45;
+}
+
+#sessioncomplete
+{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 25;
+    width: min(360px, calc(100vw - 32px));
+    padding: 24px 24px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface-solid);
+    box-shadow: var(--shadow);
+    text-align: center;
+    animation: sessioncomplete-in 0.5s var(--ease-out);
+}
+
+#sessioncompletetitle
+{
+    margin-bottom: 6px;
+    color: var(--ui-text);
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+}
+
+#sessioncompletesummary
+{
+    margin-bottom: 18px;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.sessioncompleteactions
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+#sessioncomplete button
+{
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ui-text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#sessioncomplete button:hover
+{
+    background: var(--hover);
+}
+
+#sessioncomplete #sessionrestart
+{
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--background-color);
+    font-weight: 600;
+}
+
+@keyframes sessioncomplete-in
+{
+    from { opacity: 0; transform: translateY(10px) scale(0.98); filter: blur(4px); }
+    to   { opacity: 1; transform: none; filter: none; }
+}
+
+.hidden
+{
+    display: none !important;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 860px)
+{
+    .socialicons
+    {
+        display: none;
+    }
+}
+
+@media (max-width: 600px)
+{
+    .dock
+    {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        translate: none;
+        max-width: none;
+    }
+
+    /* Two rows: the routine picker gets the full width, the other controls sit below it. */
+    .dock
+    {
+        flex-wrap: wrap;
+        row-gap: 2px;
+    }
+
+    .routinegroup
+    {
+        flex: 1 1 100%;
+    }
+
+    /* Menus open above the whole dock, at its full width. */
+    .dock .dock-group
+    {
+        position: static;
+    }
+
+    .dock .menu
+    {
+        left: 0;
+        right: 0;
+        bottom: calc(100% + 10px);
+        min-width: 0;
+    }
+
+    .routinegroup + .dock-divider
+    {
+        display: none;
+    }
+
+    .routinebutton
+    {
+        flex: 1;
+        max-width: none;
+    }
+
+    .sessiongroup
+    {
+        flex: 1;
+    }
+
+    .dock-divider
+    {
+        margin: 0 2px;
+    }
+
+    .settingspanel
+    {
+        bottom: 112px;
+        max-height: calc(100vh - 136px);
+    }
+
+    .fieldlabel
+    {
+        width: 96px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+    .popover,
+    .ui,
+    .zenexit,
+    .game .dot,
+    #sessionprogressfill
+    {
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+    }
+
+    #sessioncomplete
+    {
+        animation: none;
+    }
 }
 
 .visually-hidden {
@@ -268,5 +1169,3 @@ transform: scale(1.2);
       display: none;
     }
   }
-
-

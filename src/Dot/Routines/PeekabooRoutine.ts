@@ -1,18 +1,21 @@
 import { Dot } from "../Dot.js";
 import { IDotRoutine } from "../IDotRoutine.js";
-import {GetRandomNumberInBetween} from "../../Utils/NumberUtils.js"
 
 const relativeSpawnTime:number = 1.7; // relative because it is also impacted by the "speed/velocity"
 let relativeTimeLeft = relativeSpawnTime;
-const maxXandY = 25;
+
+const RandomInRange = (min:number, max:number):number => min + Math.random() * (max - min);
+
 export const PeekabooRoutine : IDotRoutine = {
   Execute: function(dot: Dot) {
     relativeTimeLeft -= dot.dTime * dot.velocity;
     if(relativeTimeLeft < 0)
     {
         relativeTimeLeft = relativeSpawnTime;
-        dot.X = GetRandomNumberInBetween(-maxXandY,maxXandY) + dot.halfScreen;
-        dot.Y = GetRandomNumberInBetween(-maxXandY,maxXandY) + dot.halfScreen;
+        // Anywhere on screen, with the dot's edge allowed to touch the viewport edge.
+        dot.X = RandomInRange(dot.MinX, dot.MaxX);
+        dot.Y = RandomInRange(dot.MinY, dot.MaxY);
+        window.dispatchEvent(new CustomEvent("Peekaboo:Jump"));
     }
   },
   title: 'Peeka-boo!',
