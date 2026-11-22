@@ -14,7 +14,10 @@ const state = {
     isComplete: false,
 };
 
+import { RegisterPopover, ClosePopover, EnableMenuKeyboard } from "./Menus.js";
+
 let timerText: HTMLElement;
+let modeLabel: HTMLElement | null;
 let progressFill: HTMLElement;
 let pauseButton: HTMLButtonElement;
 let presetButtons: HTMLButtonElement[];
@@ -43,14 +46,21 @@ const Render = (): void => {
     progressFill.style.transform = `scaleX(${progress})`;
     progressFill.parentElement!.classList.toggle("hidden", !isTimed);
 
-    pauseButton.textContent = state.isPaused ? "Resume" : "Pause";
+    if (modeLabel) {
+        modeLabel.textContent = isTimed ? `${state.presetSeconds / 60} min` : "Free";
+    }
+
+    // The button shows a play icon while paused and a pause icon while running (see styles.css).
+    const pauseLabel = state.isPaused ? "Resume (Space)" : "Pause (Space)";
+    pauseButton.dataset.state = state.isPaused ? "paused" : "running";
+    pauseButton.setAttribute("aria-label", pauseLabel);
+    pauseButton.title = pauseLabel;
     pauseButton.disabled = state.isComplete;
-    pauseButton.setAttribute("aria-pressed", String(state.isPaused));
 
     presetButtons.forEach(button => {
         const selected = Number(button.dataset.seconds) === state.presetSeconds;
         button.classList.toggle("selected", selected);
-        button.setAttribute("aria-pressed", String(selected));
+        button.setAttribute("aria-checked", String(selected));
     });
 
     dotElement.classList.toggle("resting", state.isPaused || state.isComplete);
@@ -100,6 +110,7 @@ const Tick = (dTime: number): void => {
 
 export const InitializeSessionTimer = (): void => {
     timerText = document.getElementById("sessiontime")!;
+    modeLabel = document.getElementById("sessionmode");
     progressFill = document.getElementById("sessionprogressfill")!;
     pauseButton = document.getElementById("sessionpause") as HTMLButtonElement;
     presetButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".sessionpreset"));
@@ -110,9 +121,20 @@ export const InitializeSessionTimer = (): void => {
     presetButtons.forEach(button => {
         button.addEventListener("click", () => {
             StartSession(Number(button.dataset.seconds) as SessionPresetSeconds);
+            ClosePopover();
             button.blur(); // so Space toggles pause instead of re-clicking this button
         });
     });
+
+    // Session length menu (Free / 2 / 5 / 10 min), opened from the time readout.
+    const sessionMenu = document.getElementById("sessionmenu");
+    const timeButton = document.getElementById("sessiontimebutton");
+    if (sessionMenu && timeButton) {
+        EnableMenuKeyboard(sessionMenu, ".sessionpreset");
+        RegisterPopover(timeButton, sessionMenu, {
+            onOpen: () => sessionMenu.querySelector<HTMLElement>(".sessionpreset.selected")?.focus(),
+        });
+    }
 
     pauseButton.addEventListener("click", () => {
         TogglePause();

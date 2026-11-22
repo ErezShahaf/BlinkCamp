@@ -34,6 +34,13 @@ const RoutineManager: { activeDotRoutines: Array<IDotRoutine>, currentRoutineInd
 };
 
 
+// Jump straight to a routine (used by the routine menu and Shuffle).
+export const SelectRoutine = (index: number): void => {
+    const count = RoutineManager.activeDotRoutines.length;
+    RoutineManager.currentRoutineIndex = ((index % count) + count) % count;
+    window.dispatchEvent(RoutineChanged);
+};
+
 window.addEventListener('Game:LeftArrowClick', () => {
     let newIndex = RoutineManager.currentRoutineIndex - 1;
     newIndex = newIndex < 0 ? RoutineManager.activeDotRoutines.length -1 : newIndex;

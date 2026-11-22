@@ -78,6 +78,14 @@ export const InitializeAppearance = () => {
             Save(storageKeys.theme, swatch.dataset.theme);
         });
     });
+    window.addEventListener("Game:ResetSettings", () => {
+        ApplyDotColor(null);
+        ApplyTheme("classic", swatches, colorInput);
+        ApplyShape("circle", dot, shapeButtons);
+        Save(storageKeys.dotColor, null);
+        Save(storageKeys.theme, "classic");
+        Save(storageKeys.shape, "circle");
+    });
     colorInput.addEventListener("input", () => {
         ApplyDotColor(colorInput.value);
         Save(storageKeys.dotColor, colorInput.value);

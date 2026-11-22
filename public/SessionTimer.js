@@ -8,7 +8,9 @@ const state = {
     isPaused: false,
     isComplete: false,
 };
+import { RegisterPopover, ClosePopover, EnableMenuKeyboard } from "./Menus.js";
 let timerText;
+let modeLabel;
 let progressFill;
 let pauseButton;
 let presetButtons;
@@ -32,13 +34,19 @@ const Render = () => {
     const progress = isTimed ? Math.min(1, state.elapsedSeconds / state.presetSeconds) : 0;
     progressFill.style.transform = `scaleX(${progress})`;
     progressFill.parentElement.classList.toggle("hidden", !isTimed);
-    pauseButton.textContent = state.isPaused ? "Resume" : "Pause";
+    if (modeLabel) {
+        modeLabel.textContent = isTimed ? `${state.presetSeconds / 60} min` : "Free";
+    }
+    // The button shows a play icon while paused and a pause icon while running (see styles.css).
+    const pauseLabel = state.isPaused ? "Resume (Space)" : "Pause (Space)";
+    pauseButton.dataset.state = state.isPaused ? "paused" : "running";
+    pauseButton.setAttribute("aria-label", pauseLabel);
+    pauseButton.title = pauseLabel;
     pauseButton.disabled = state.isComplete;
-    pauseButton.setAttribute("aria-pressed", String(state.isPaused));
     presetButtons.forEach(button => {
         const selected = Number(button.dataset.seconds) === state.presetSeconds;
         button.classList.toggle("selected", selected);
-        button.setAttribute("aria-pressed", String(selected));
+        button.setAttribute("aria-checked", String(selected));
     });
     dotElement.classList.toggle("resting", state.isPaused || state.isComplete);
     completeOverlay.classList.toggle("hidden", !state.isComplete);
@@ -81,6 +89,7 @@ const Tick = (dTime) => {
 };
 export const InitializeSessionTimer = () => {
     timerText = document.getElementById("sessiontime");
+    modeLabel = document.getElementById("sessionmode");
     progressFill = document.getElementById("sessionprogressfill");
     pauseButton = document.getElementById("sessionpause");
     presetButtons = Array.from(document.querySelectorAll(".sessionpreset"));
@@ -90,9 +99,19 @@ export const InitializeSessionTimer = () => {
     presetButtons.forEach(button => {
         button.addEventListener("click", () => {
             StartSession(Number(button.dataset.seconds));
+            ClosePopover();
             button.blur(); // so Space toggles pause instead of re-clicking this button
         });
     });
+    // Session length menu (Free / 2 / 5 / 10 min), opened from the time readout.
+    const sessionMenu = document.getElementById("sessionmenu");
+    const timeButton = document.getElementById("sessiontimebutton");
+    if (sessionMenu && timeButton) {
+        EnableMenuKeyboard(sessionMenu, ".sessionpreset");
+        RegisterPopover(timeButton, sessionMenu, {
+            onOpen: () => { var _a; return (_a = sessionMenu.querySelector(".sessionpreset.selected")) === null || _a === void 0 ? void 0 : _a.focus(); },
+        });
+    }
     pauseButton.addEventListener("click", () => {
         TogglePause();
         pauseButton.blur();
