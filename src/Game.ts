@@ -1,6 +1,7 @@
 import { Dot } from "./Dot/Dot.js";
 import { SubscribeToRoutineChangedEvent } from "./RoutineTitleFollower.js";
 import { SubscribeToNotificationsButtonClick } from "./PushNotifications.js";
+import { InitializeSettings } from "./Settings.js";
 
 const InitializeScene = ():void  => 
 {
@@ -11,6 +12,7 @@ const InitializeScene = ():void  =>
     SetRightArrowEvent();
     SetVelocityChangeEvent();
     SetRadiusChangeEvent();
+    InitializeSettings();
     // SetReminderButtonEvent();
 
     // TODO

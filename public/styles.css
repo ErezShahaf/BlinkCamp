@@ -269,4 +269,37 @@ transform: scale(1.2);
     }
   }
 
+/* ---------- Movement range ---------- */
+.rangerow
+{
+    position: absolute;
+    top: calc(85vh - 90px);
+    left: 5vw;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    -webkit-user-select: none;
+    user-select: none;
+}
 
+.rangerow > .label
+{
+    width: 40px;
+}
+
+#rangeslider
+{
+    width: 120px;
+    margin: 0;
+}
+
+#rangevalue
+{
+    font-size: 12px;
+    min-width: 36px;
+    font-variant-numeric: tabular-nums;
+}
