@@ -1,33 +1,33 @@
 import { Dot } from "./Dot/Dot.js";
+import { InitializeAppearance } from "./Appearance.js";
 import { SubscribeToRoutineChangedEvent } from "./RoutineTitleFollower.js";
+import { InitializeSessionTimer } from "./SessionTimer.js";
 import { SubscribeToNotificationsButtonClick } from "./PushNotifications.js";
+import { InitializeSettings } from "./Settings.js";
+import { InitializeRoutinePicker } from "./RoutinePicker.js";
+import { InitializeZen } from "./Zen.js";
+import { InitializeSound } from "./Sound.js";
+import { InitializeShortcuts } from "./Shortcuts.js";
+import { InitializeMobile } from "./Mobile.js";
 const InitializeScene = () => {
     new Dot(document.getElementById("dot"));
+    InitializeAppearance();
     // TODO
     // Creat UIEventDispatcher class (component base type) and move them there, and change the name of this class to GameScene.
-    SetLeftArrowEvent();
-    SetRightArrowEvent();
+    InitializeSessionTimer();
     SetVelocityChangeEvent();
     SetRadiusChangeEvent();
+    InitializeSettings();
+    InitializeRoutinePicker();
+    InitializeZen();
+    InitializeSound();
+    InitializeShortcuts();
+    InitializeMobile();
     // SetReminderButtonEvent();
     // TODO
     // Create a component base class which has awake and update methods, and instantiate those classes instead.
     SubscribeToRoutineChangedEvent();
     SubscribeToNotificationsButtonClick();
-};
-const SetLeftArrowEvent = () => {
-    const leftArrowClickEvent = new CustomEvent('Game:LeftArrowClick');
-    const leftArrow = document.querySelector(".arrow.left");
-    leftArrow.addEventListener("click", () => {
-        window.dispatchEvent(leftArrowClickEvent);
-    });
-};
-const SetRightArrowEvent = () => {
-    const rightArrowClickEvent = new CustomEvent('Game:RightArrowClick');
-    const rightArrow = document.querySelector(".arrow.right");
-    rightArrow.addEventListener("click", () => {
-        window.dispatchEvent(rightArrowClickEvent);
-    });
 };
 const SetVelocityChangeEvent = () => {
     const velocitySlider = document.getElementById("velocityslider");

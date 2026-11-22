@@ -1,0 +1,17 @@
+{
+  "name": "BlinkCamp - Eye Exercises",
+  "short_name": "BlinkCamp",
+  "description": "Free eye muscle and vision training exercises: follow the moving dot.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "background_color": "#1e1e1e",
+  "theme_color": "#1e1e1e",
+  "icons": [
+    { "src": "Assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "Assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "Assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "Assets/dot.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
