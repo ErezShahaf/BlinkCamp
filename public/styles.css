@@ -21,12 +21,14 @@ body {
     --radius: 2;
     position: absolute;
     background-color: #e2b714;
-    left: calc((var(--x) * 1vw));
-    top: calc((var(--y) * 1vh));
+    left: 0;
+    top: 0;
     border-radius: 50%;
     width: calc(var(--radius) * 1vw);
     height: calc(var(--radius) * 1vw);
-    transform: translate(-50%,-50%);
+    /* Positioned with transform rather than left/top so moving the dot never triggers layout. */
+    transform: translate(calc(var(--x) * 1vw - 50%), calc(var(--y) * 1vh - 50%));
+    will-change: transform;
 }
 
 .arrow {

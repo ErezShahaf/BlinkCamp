@@ -10,6 +10,8 @@ export class Dot extends GameElement {
         this.velocity = 3;
         this.dTime = 0;
         this.halfScreen = 50;
+        // Cached so routines can read it every frame without forcing a style recalculation.
+        this.radius = NaN;
         gameElementInstance = this;
         this.dotElement = dotElement;
         window.addEventListener('Game:VelocityValueChanged', (event) => {
@@ -25,10 +27,14 @@ export class Dot extends GameElement {
     }
     // Note: "--radius" is the dot's full width/height in vw units (see .dot in styles.css).
     get Radius() {
-        return parseFloat(getComputedStyle(this.dotElement).getPropertyValue("--radius"));
+        if (Number.isNaN(this.radius)) {
+            this.radius = parseFloat(getComputedStyle(this.dotElement).getPropertyValue("--radius"));
+        }
+        return this.radius;
     }
     set Radius(value) {
-        this.dotElement.style.setProperty("--radius", value.toString());
+        this.radius = Number(value);
+        this.dotElement.style.setProperty("--radius", this.radius.toString());
     }
     // Half of the dot's size, in the units X is measured in (vw).
     get HalfSizeX() {
