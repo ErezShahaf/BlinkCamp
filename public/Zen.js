@@ -27,6 +27,14 @@ const ExitZen = () => {
     exitButton.inert = true;
     zenButton.focus({ preventScroll: true });
 };
+export const ToggleZen = () => {
+    if (isZen) {
+        ExitZen();
+    }
+    else {
+        EnterZen();
+    }
+};
 export const InitializeZen = () => {
     zenButton = document.getElementById("zenbutton");
     exitButton = document.getElementById("zenexit");

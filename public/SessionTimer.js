@@ -38,7 +38,7 @@ const Render = () => {
         modeLabel.textContent = isTimed ? `${state.presetSeconds / 60} min` : "Free";
     }
     // The button shows a play icon while paused and a pause icon while running (see styles.css).
-    const pauseLabel = state.isPaused ? "Resume (Space)" : "Pause (Space)";
+    const pauseLabel = state.isPaused ? "Resume (P or Space)" : "Pause (P or Space)";
     pauseButton.dataset.state = state.isPaused ? "paused" : "running";
     pauseButton.setAttribute("aria-label", pauseLabel);
     pauseButton.title = pauseLabel;
@@ -61,11 +61,18 @@ const StartSession = (presetSeconds) => {
         window.dispatchEvent(new CustomEvent("Session:Started", { detail: { presetSeconds } }));
     }
 };
-const TogglePause = () => {
+export const TogglePause = () => {
     if (state.isComplete) {
         return;
     }
     state.isPaused = !state.isPaused;
+    Render();
+};
+// Stop: pause and rewind the current session to its start (same length). Press P / Space to begin again.
+export const StopSession = () => {
+    state.elapsedSeconds = 0;
+    state.isPaused = true;
+    state.isComplete = false;
     Render();
 };
 const CompleteSession = () => {
@@ -98,6 +105,7 @@ const Tick = (dTime) => {
     }
 };
 export const InitializeSessionTimer = () => {
+    var _a;
     timerText = document.getElementById("sessiontime");
     modeLabel = document.getElementById("sessionmode");
     progressFill = document.getElementById("sessionprogressfill");
@@ -117,7 +125,7 @@ export const InitializeSessionTimer = () => {
     const sessionMenu = document.getElementById("sessionmenu");
     const timeButton = document.getElementById("sessiontimebutton");
     if (sessionMenu && timeButton) {
-        EnableMenuKeyboard(sessionMenu, ".sessionpreset");
+        EnableMenuKeyboard(sessionMenu, ".sessionpreset, .menuaction");
         RegisterPopover(timeButton, sessionMenu, {
             onOpen: () => { var _a; return (_a = sessionMenu.querySelector(".sessionpreset.selected")) === null || _a === void 0 ? void 0 : _a.focus(); },
         });
@@ -127,6 +135,10 @@ export const InitializeSessionTimer = () => {
         pauseButton.blur();
     });
     document.getElementById("sessionrestart").addEventListener("click", () => StartSession(state.presetSeconds));
+    (_a = document.getElementById("sessionstop")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => {
+        StopSession();
+        ClosePopover();
+    });
     document.getElementById("sessionfree").addEventListener("click", () => StartSession(0));
     window.addEventListener("keydown", (event) => {
         if (event.code !== "Space" || event.repeat) {

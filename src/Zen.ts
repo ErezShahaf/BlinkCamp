@@ -34,6 +34,10 @@ const ExitZen = (): void => {
     zenButton.focus({ preventScroll: true });
 };
 
+export const ToggleZen = (): void => {
+    if (isZen) { ExitZen(); } else { EnterZen(); }
+};
+
 export const InitializeZen = (): void => {
     zenButton = document.getElementById("zenbutton") as HTMLButtonElement;
     exitButton = document.getElementById("zenexit") as HTMLButtonElement;

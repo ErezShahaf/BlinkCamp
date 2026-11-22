@@ -786,6 +786,82 @@ kbd
     background: var(--background-color);
 }
 
+/* ---------- Full screen button, Stop menu item, shortcut list ---------- */
+#fullscreenbutton .icon-minimize,
+#fullscreenbutton[data-state="on"] .icon-maximize
+{
+    display: none;
+}
+
+#fullscreenbutton[data-state="on"] .icon-minimize
+{
+    display: block;
+}
+
+.menuseparator
+{
+    height: 1px;
+    margin: 6px 4px;
+    background: var(--line);
+}
+
+.menu .menuaction
+{
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.menuaction .icon
+{
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+}
+
+.menuaction kbd
+{
+    margin-left: auto;
+}
+
+.shortcuts
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    margin: 12px 0 0;
+    font-size: 12px;
+}
+
+.shortcuts div
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.shortcuts dt
+{
+    flex: none;
+    display: flex;
+    gap: 3px;
+    min-width: 58px;
+}
+
+.shortcuts dd
+{
+    margin: 0;
+    color: var(--text-muted);
+}
+
+@media (max-width: 600px)
+{
+    .shortcuts
+    {
+        grid-template-columns: 1fr;
+    }
+}
+
 .panelfooter
 {
     display: flex;
