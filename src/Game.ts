@@ -8,6 +8,7 @@ import { InitializeRoutinePicker } from "./RoutinePicker.js";
 import { InitializeZen } from "./Zen.js";
 import { InitializeSound } from "./Sound.js";
 import { InitializeShortcuts } from "./Shortcuts.js";
+import { InitializeMobile } from "./Mobile.js";
 
 const InitializeScene = ():void  => 
 {
@@ -23,6 +24,7 @@ const InitializeScene = ():void  =>
     InitializeZen();
     InitializeSound();
     InitializeShortcuts();
+    InitializeMobile();
     // SetReminderButtonEvent();
 
     // TODO

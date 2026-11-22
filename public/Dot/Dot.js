@@ -26,7 +26,7 @@ export class Dot extends GameElement {
         // Keep the dot inside the viewport when the window is resized.
         window.addEventListener('resize', () => this.ClampToScreen());
     }
-    // Note: "--radius" is the dot's full width/height in vw units (see .dot in styles.css).
+    // Note: "--radius" is the dot's full width/height, in percent of the screen's longer side (see .dot in styles.css).
     get Radius() {
         if (Number.isNaN(this.radius)) {
             this.radius = parseFloat(getComputedStyle(this.dotElement).getPropertyValue("--radius"));
@@ -37,13 +37,18 @@ export class Dot extends GameElement {
         this.radius = Number(value);
         this.dotElement.style.setProperty("--radius", this.radius.toString());
     }
+    // The dot is sized in percent of the screen's longer side (see .dot in styles.css):
+    // X is measured in percent of the width, Y in percent of the visible height.
+    get LongerSide() {
+        return Math.max(window.innerWidth, window.innerHeight);
+    }
     // Half of the dot's size, in the units X is measured in (vw).
     get HalfSizeX() {
-        return this.Radius / 2;
+        return (this.Radius / 2) * (this.LongerSide / window.innerWidth);
     }
-    // Half of the dot's size, in the units Y is measured in (vh). The dot is sized in vw, so convert.
+    // Half of the dot's size, in the units Y is measured in (visible-height percent).
     get HalfSizeY() {
-        return (this.Radius / 2) * (window.innerWidth / window.innerHeight);
+        return (this.Radius / 2) * (this.LongerSide / window.innerHeight);
     }
     // How far from the center the dot may travel. At a range of 100% the dot's edge just touches
     // the screen edge; lower ranges (Range slider) keep it closer to the center.

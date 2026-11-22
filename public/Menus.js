@@ -6,6 +6,7 @@ const SetOpen = (popover, isOpen) => {
     popover.panel.inert = !isOpen;
     popover.trigger.setAttribute("aria-expanded", String(isOpen));
 };
+export const IsPopoverOpen = () => openPopover !== null;
 export const ClosePopover = (restoreFocus = false) => {
     if (!openPopover) {
         return false;

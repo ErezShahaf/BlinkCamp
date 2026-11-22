@@ -8,6 +8,7 @@ import { InitializeRoutinePicker } from "./RoutinePicker.js";
 import { InitializeZen } from "./Zen.js";
 import { InitializeSound } from "./Sound.js";
 import { InitializeShortcuts } from "./Shortcuts.js";
+import { InitializeMobile } from "./Mobile.js";
 const InitializeScene = () => {
     new Dot(document.getElementById("dot"));
     InitializeAppearance();
@@ -21,6 +22,7 @@ const InitializeScene = () => {
     InitializeZen();
     InitializeSound();
     InitializeShortcuts();
+    InitializeMobile();
     // SetReminderButtonEvent();
     // TODO
     // Create a component base class which has awake and update methods, and instantiate those classes instead.

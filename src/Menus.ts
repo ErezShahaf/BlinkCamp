@@ -16,6 +16,8 @@ const SetOpen = (popover: Popover, isOpen: boolean): void => {
     popover.trigger.setAttribute("aria-expanded", String(isOpen));
 };
 
+export const IsPopoverOpen = (): boolean => openPopover !== null;
+
 export const ClosePopover = (restoreFocus = false): boolean => {
     if (!openPopover) {
         return false;

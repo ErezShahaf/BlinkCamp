@@ -72,7 +72,7 @@
 .game .dot.shape-ring
 {
     background-color: transparent;
-    box-shadow: inset 0 0 0 calc(var(--radius) * 0.22vw) var(--dot-color);
+    box-shadow: inset 0 0 0 calc(var(--radius) * 0.22 * var(--size-unit)) var(--dot-color);
 }
 
 .shapebutton[data-shape="ring"]::before
@@ -97,11 +97,26 @@ body {
     left: 0;
     top: 0;
     border-radius: 50%;
-    width: calc(var(--radius) * 1vw);
-    height: calc(var(--radius) * 1vw);
+    /* Size follows the screen's longer side (same as before on landscape screens; phones in
+       portrait no longer get a tiny dot). Height uses the visible viewport (see @supports below). */
+    --size-unit: max(1vw, 1vh);
+    --y-unit: 1vh;
+    width: calc(var(--radius) * var(--size-unit));
+    height: calc(var(--radius) * var(--size-unit));
     /* Positioned with transform rather than left/top so moving the dot never triggers layout. */
-    transform: translate(calc(var(--x) * 1vw - 50%), calc(var(--y) * 1vh - 50%));
+    transform: translate(calc(var(--x) * 1vw - 50%), calc(var(--y) * var(--y-unit) - 50%));
     will-change: transform;
+}
+
+/* On phones, 1vh is the screen height *without* the browser's toolbars, so the bottom of the
+   dot's path could end up hidden behind the address bar. dvh is the height actually visible. */
+@supports (height: 1dvh)
+{
+    .dot
+    {
+        --size-unit: max(1vw, 1dvh);
+        --y-unit: 1dvh;
+    }
 }
 
 /* ---------- Interface tokens ----------
@@ -526,6 +541,7 @@ kbd
     z-index: 15;
     width: min(420px, calc(100vw - 24px));
     max-height: calc(100vh - 110px);
+    max-height: calc(100dvh - 110px);
     padding: 0 20px 16px;
     overflow-y: auto;
     border-radius: var(--radius-lg);
@@ -966,7 +982,8 @@ kbd
     transition: opacity 0.45s var(--ease-out), visibility 0s linear 0s;
 }
 
-body.zen .ui
+body.zen .ui,
+body.controls-hidden .ui
 {
     opacity: 0;
     visibility: hidden;
@@ -1116,6 +1133,103 @@ body.zen.idle .zenexit
     display: none !important;
 }
 
+/* ---------- Touch screens ---------- */
+html,
+body
+{
+    /* No pull-to-refresh or rubber-band scrolling in the middle of an exercise. */
+    overscroll-behavior: none;
+}
+
+button,
+input
+{
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.taphint
+{
+    position: fixed;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    translate: -50% 0;
+    z-index: 30;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface-solid);
+    box-shadow: var(--shadow);
+    color: var(--ui-text);
+    font-size: 14px;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: taphint-in 0.4s var(--ease-out);
+    transition: opacity 0.5s ease;
+}
+
+.taphint.leaving
+{
+    opacity: 0;
+}
+
+@keyframes taphint-in
+{
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* Finger-sized controls (about 44px, the usual touch-target guideline). */
+@media (pointer: coarse)
+{
+    .iconbutton
+    {
+        width: 44px;
+        height: 44px;
+    }
+
+    .routinebutton,
+    .timebutton
+    {
+        height: 44px;
+    }
+
+    .menu button
+    {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .shapebutton,
+    .themeswatch
+    {
+        width: 34px;
+        height: 34px;
+    }
+
+    .segmented button
+    {
+        padding: 9px 16px;
+    }
+
+    .switch
+    {
+        width: 44px;
+        height: 26px;
+    }
+
+    .switch::after
+    {
+        width: 20px;
+        height: 20px;
+    }
+
+    .switch:checked::after
+    {
+        translate: 18px 0;
+    }
+}
+
 /* ---------- Small screens ---------- */
 @media (max-width: 860px)
 {
@@ -1131,7 +1245,7 @@ body.zen.idle .zenexit
     {
         left: 12px;
         right: 12px;
-        bottom: 12px;
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
         translate: none;
         max-width: none;
     }
@@ -1185,8 +1299,9 @@ body.zen.idle .zenexit
 
     .settingspanel
     {
-        bottom: 112px;
-        max-height: calc(100vh - 136px);
+        bottom: calc(128px + env(safe-area-inset-bottom, 0px));
+        max-height: calc(100vh - 152px);
+        max-height: calc(100dvh - 152px);
     }
 
     .fieldlabel
