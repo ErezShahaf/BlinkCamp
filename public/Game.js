@@ -6,6 +6,7 @@ import { SubscribeToNotificationsButtonClick } from "./PushNotifications.js";
 import { InitializeSettings } from "./Settings.js";
 import { InitializeRoutinePicker } from "./RoutinePicker.js";
 import { InitializeZen } from "./Zen.js";
+import { InitializeSound } from "./Sound.js";
 const InitializeScene = () => {
     new Dot(document.getElementById("dot"));
     InitializeAppearance();
@@ -17,6 +18,7 @@ const InitializeScene = () => {
     InitializeSettings();
     InitializeRoutinePicker();
     InitializeZen();
+    InitializeSound();
     // SetReminderButtonEvent();
     // TODO
     // Create a component base class which has awake and update methods, and instantiate those classes instead.

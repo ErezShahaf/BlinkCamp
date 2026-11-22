@@ -73,6 +73,9 @@ const StartSession = (presetSeconds: SessionPresetSeconds): void => {
     state.isPaused = false;
     state.isComplete = false;
     Render();
+    if (presetSeconds > 0) {
+        window.dispatchEvent(new CustomEvent("Session:Started", { detail: { presetSeconds } }));
+    }
 };
 
 const TogglePause = (): void => {
@@ -89,6 +92,7 @@ const CompleteSession = (): void => {
     const minutes = state.presetSeconds / 60;
     completeSummary.textContent = `You finished a ${minutes}-minute session. Rest your eyes for a moment.`;
     Render();
+    window.dispatchEvent(new CustomEvent("Session:Complete"));
 };
 
 const Tick = (dTime: number): void => {
@@ -96,7 +100,14 @@ const Tick = (dTime: number): void => {
         return;
     }
     const previousWholeSeconds = Math.floor(state.elapsedSeconds);
+    const previousSecondsLeft = state.presetSeconds - state.elapsedSeconds;
     state.elapsedSeconds += Math.min(dTime, maxCountedFrameSeconds);
+
+    // Heads-up when a timed session crosses its last minute.
+    const secondsLeft = state.presetSeconds - state.elapsedSeconds;
+    if (state.presetSeconds > 60 && previousSecondsLeft > 60 && secondsLeft <= 60) {
+        window.dispatchEvent(new CustomEvent("Session:OneMinuteLeft"));
+    }
 
     if (state.presetSeconds > 0 && state.elapsedSeconds >= state.presetSeconds) {
         CompleteSession();

@@ -728,6 +728,64 @@ kbd
     box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
 }
 
+.fieldhint
+{
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.field.disabled
+{
+    opacity: 0.45;
+}
+
+.field.disabled input
+{
+    cursor: default;
+}
+
+/* On/off switch built from a native checkbox (keeps keyboard and screen reader behaviour). */
+.switch
+{
+    flex: none;
+    position: relative;
+    width: 36px;
+    height: 20px;
+    margin: 0;
+    border-radius: 999px;
+    background: var(--press);
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.switch::after
+{
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--ui-text);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+    transition: translate 0.2s var(--ease-out);
+}
+
+.switch:checked
+{
+    background: var(--accent);
+}
+
+.switch:checked::after
+{
+    translate: 16px 0;
+    background: var(--background-color);
+}
+
 .panelfooter
 {
     display: flex;

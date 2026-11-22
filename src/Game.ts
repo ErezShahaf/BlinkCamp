@@ -6,6 +6,7 @@ import { SubscribeToNotificationsButtonClick } from "./PushNotifications.js";
 import { InitializeSettings } from "./Settings.js";
 import { InitializeRoutinePicker } from "./RoutinePicker.js";
 import { InitializeZen } from "./Zen.js";
+import { InitializeSound } from "./Sound.js";
 
 const InitializeScene = ():void  => 
 {
@@ -19,6 +20,7 @@ const InitializeScene = ():void  =>
     InitializeSettings();
     InitializeRoutinePicker();
     InitializeZen();
+    InitializeSound();
     // SetReminderButtonEvent();
 
     // TODO

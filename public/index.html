@@ -103,6 +103,29 @@
             </div>
 
             <div class="panelsection">
+                <h3>Sound</h3>
+                <div class="field" role="group" aria-labelledby="soundlabel"><span class="fieldlabel" id="soundlabel">Cues</span>
+                    <div class="segmented">
+                        <button type="button" class="soundmode" data-mode="off" title="No sounds">Off</button>
+                        <button type="button" class="soundmode" data-mode="end" title="A chime when a timed session finishes">End only</button>
+                        <button type="button" class="soundmode" data-mode="all" title="Also: session start, one minute left, Shuffle switching routines">All</button>
+                    </div>
+                </div>
+                <label class="field soundonly" for="soundvolume"><span class="fieldlabel">Volume</span>
+                    <input id="soundvolume" type="range" min="0" max="100" value="70" step="1">
+                    <span class="fieldvalue" id="soundvolumevalue">70%</span>
+                </label>
+                <label class="field soundonly" for="peekabooclicks"><span class="fieldlabel">Peek-a-boo clicks</span>
+                    <input id="peekabooclicks" class="switch" type="checkbox" role="switch">
+                    <span class="fieldhint">A soft click each time the dot jumps</span>
+                </label>
+                <div class="field">
+                    <span class="fieldlabel"></span>
+                    <button type="button" class="textbutton" id="soundtest"><svg class="icon icon-play-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg><span>Play end chime</span></button>
+                </div>
+            </div>
+
+            <div class="panelsection">
                 <h3>Controls</h3>
                 <div class="field" role="group" aria-labelledby="pickerlabel"><span class="fieldlabel" id="pickerlabel">Routine picker</span>
                     <div class="segmented">

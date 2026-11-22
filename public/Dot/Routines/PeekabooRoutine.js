@@ -9,6 +9,7 @@ export const PeekabooRoutine = {
             // Anywhere on screen, with the dot's edge allowed to touch the viewport edge.
             dot.X = RandomInRange(dot.MinX, dot.MaxX);
             dot.Y = RandomInRange(dot.MinY, dot.MaxY);
+            window.dispatchEvent(new CustomEvent("Peekaboo:Jump"));
         }
     },
     title: 'Peeka-boo!',

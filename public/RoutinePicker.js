@@ -83,6 +83,7 @@ const PickRandomRoutine = () => {
     // Any routine except the current one.
     const offset = 1 + Math.floor(Math.random() * (count - 1));
     SelectRoutine((RoutineManager.currentRoutineIndex + offset) % count);
+    window.dispatchEvent(new CustomEvent("Shuffle:RoutineChanged"));
 };
 const ShuffleTick = (dTime) => {
     if (!shuffle || !IsSessionRunning()) {
