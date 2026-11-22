@@ -2,16 +2,197 @@
 {
     box-sizing: border-box;
 }
-:root 
+/* ---------- Color themes ----------
+   Classic is the default. Other themes override these variables via [data-theme] on <html>.
+   A custom dot color (color picker) is set inline as --dot-color on <html>. */
+:root
 {
-    --hue: 0;
-    --saturation: 0%;
-    --background-color: hsl(var(--hue), var(--saturation), 5%);
-    --dot-color: hsl(var(--hue), var(--saturation), 100%);
+    --background-color: #1e1e1e;
+    --dot-color: #e2b714;
+    --ui-text: #ffffff;
+    --accent: #e2b714;
+    --ui-line: rgba(255, 255, 255, 0.35);
+    --icon-filter: brightness(10000%) saturate(0%);
+}
+
+:root[data-theme="midnight"]
+{
+    --background-color: #0e1726;
+    --dot-color: #4fd1c5;
+    --ui-text: #e6edf7;
+    --accent: #4fd1c5;
+}
+
+:root[data-theme="forest"]
+{
+    --background-color: #142019;
+    --dot-color: #f4a259;
+    --ui-text: #e8efe9;
+    --accent: #f4a259;
+}
+
+:root[data-theme="paper"]
+{
+    --background-color: #f1ede4;
+    --dot-color: #c2412d;
+    --ui-text: #2a2622;
+    --accent: #c2412d;
+    --ui-line: rgba(0, 0, 0, 0.3);
+    --icon-filter: brightness(0) saturate(0%);
+}
+
+:root[data-theme="contrast"]
+{
+    --background-color: #000000;
+    --dot-color: #ffffff;
+    --ui-text: #ffffff;
+    --accent: #ffffff;
+    --ui-line: rgba(255, 255, 255, 0.6);
+}
+
+/* Dot color and shape. (Kept separate from the .dot block below so position/size rules stay untouched.) */
+.game .dot
+{
+    background-color: var(--dot-color);
+}
+
+.game .dot.shape-square,
+.shapebutton[data-shape="square"]::before
+{
+    border-radius: 12%;
+}
+
+.game .dot.shape-diamond,
+.shapebutton[data-shape="diamond"]::before
+{
+    border-radius: 0;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.game .dot.shape-ring
+{
+    background-color: transparent;
+    box-shadow: inset 0 0 0 calc(var(--radius) * 0.22vw) var(--dot-color);
+}
+
+.shapebutton[data-shape="ring"]::before
+{
+    background-color: transparent;
+    box-shadow: inset 0 0 0 3px var(--ui-text);
+}
+
+/* ---------- Look row (theme, dot color, dot shape) ---------- */
+.lookrow
+{
+    position: absolute;
+    top: calc(85vh - 125px);
+    left: 5vw;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--ui-text);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.lookrow .label
+{
+    width: 40px;
+}
+
+.lookrow .sublabel
+{
+    font-size: 12px;
+    font-weight: normal;
+    margin-left: 4px;
+}
+
+.themeswatches,
+.shapebuttons
+{
+    display: flex;
+    gap: 6px;
+}
+
+.themeswatch
+{
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid var(--ui-line);
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--swatch-bg) 50%, var(--swatch-dot) 50%);
+}
+
+.shapebutton
+{
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.shapebutton::before
+{
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--ui-text);
+}
+
+.themeswatch:hover,
+.shapebutton:hover
+{
+    transform: scale(1.15);
+}
+
+.themeswatch.selected
+{
+    border-color: var(--ui-text);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+.shapebutton.selected
+{
+    border-color: var(--accent);
+}
+
+#dotcolor
+{
+    width: 26px;
+    height: 20px;
+    padding: 0;
+    border: 1px solid var(--ui-line);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+}
+
+#dotcolor::-webkit-color-swatch-wrapper { padding: 2px; }
+#dotcolor::-webkit-color-swatch { border: none; border-radius: 2px; }
+#dotcolor::-moz-color-swatch { border: none; border-radius: 2px; }
+
+/* Controls added by other features that hardcode white text follow the theme too
+   (extra specificity so this wins even when their rules come later in the file). */
+.ui .rangerow,
+.ui .session
+{
+    color: var(--ui-text);
 }
 body {
     margin: 0;
-    background-color: #1e1e1e;
+    background-color: var(--background-color);
+    transition: background-color 0.3s ease;
     overflow: hidden;
 }
 .dot 
@@ -43,7 +224,7 @@ position: absolute;
 border-width: 10px 20px 10px 0;
 top: 85vh;
 left: calc(5vw + 120px);
-border-color: transparent #ffffff transparent transparent;
+border-color: transparent var(--ui-text) transparent transparent;
 }
 
 .right {
@@ -51,7 +232,7 @@ position: absolute;
 border-width: 10px 0 10px 20px;
 top: 85vh;
 left: calc(5vw + 150px);
-border-color: transparent transparent transparent #ffffff;
+border-color: transparent transparent transparent var(--ui-text);
 }
 
 .arrow:hover {
@@ -66,7 +247,7 @@ transform: scale(1.2);
     left: 5vw;
     font-weight: bold;
     font-size: 14px;
-    color: white;
+    color: var(--ui-text);
     -webkit-user-select: none;  /* Chrome, Safari, Opera */
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
@@ -81,7 +262,7 @@ transform: scale(1.2);
     left: 5vw;
     font-weight: bold;
     font-size: 15px;
-    color: white;
+    color: var(--ui-text);
     -webkit-user-select: none;  /* Chrome, Safari, Opera */
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
@@ -96,7 +277,7 @@ transform: scale(1.2);
     left: 5vw;
     font-weight: bold;
     font-size: 15px;
-    color: white;
+    color: var(--ui-text);
     -webkit-user-select: none;  /* Chrome, Safari, Opera */
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
@@ -111,7 +292,7 @@ transform: scale(1.2);
     left: calc(5vw + 150px);
     font-weight: bold;
     font-size: 15px;
-    color: white;
+    color: var(--ui-text);
     -webkit-user-select: none;  /* Chrome, Safari, Opera */
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
@@ -126,7 +307,7 @@ transform: scale(1.2);
     left: 5vw;
     font-weight: bold;
     font-size: 15px;
-    color: white;
+    color: var(--ui-text);
     -webkit-user-select: none;  /* Chrome, Safari, Opera */
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
@@ -165,7 +346,7 @@ transform: scale(1.2);
     left: 5vw;
     font-weight: bold;
     font-size: 14px;
-    color: white;
+    color: var(--ui-text);
     -webkit-user-select: none;  /* Chrome, Safari, Opera */
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
@@ -188,7 +369,7 @@ transform: scale(1.2);
     left: 5vw;
     font-weight: bold;
     font-size: 14px;
-    color: white;
+    color: var(--ui-text);
     -webkit-user-select: none;  /* Chrome, Safari, Opera */
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
@@ -202,7 +383,7 @@ transform: scale(1.2);
     top: calc(85vh + 90px);
     left: 5vw;
     font-size: 10px;
-    color: white;
+    color: var(--ui-text);
     -webkit-user-select: none;  /* Chrome, Safari, Opera */
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
@@ -216,7 +397,7 @@ transform: scale(1.2);
     top: 85vh;
     right: 5vw;
     width: 50px;
-    filter: brightness(10000%) saturate(0%);
+    filter: var(--icon-filter);
     -webkit-user-select: none;  /* Chrome, Safari, Opera */
     -moz-user-select: none;     /* Firefox */
     -ms-user-select: none;      /* IE 10+ */
