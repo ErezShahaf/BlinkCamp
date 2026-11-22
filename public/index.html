@@ -29,24 +29,155 @@
         <div class="dot" id="dot"></div>
     </div>
     <div class="ui">
-        <div class="arrow left"></div>
-        <div class="arrow right"></div>
-        <div id="velocitytext">Speed</div>
-        <input id="velocityslider" type="range" min="0.25" max="25" value="3" step="0.001">
-        <div id="sizetext">Size</div>
-        <input id="sizeslider" type="range" min="0.01" max="10" value="2" step="0.001">
-        <div class="changeroutine">Change Routine</div>
-        <div class="routinename">Routine Name</div>
+        <div class="dock" role="toolbar" aria-label="Exercise controls" data-picker="dropdown">
+            <div class="dock-group routinegroup">
+                <button type="button" class="iconbutton arrowonly" id="routineprev" aria-label="Previous routine (↑)" title="Previous routine (↑)"><svg class="icon icon-chevron-left" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg></button>
+                <button type="button" class="routinebutton" id="routinebutton" aria-haspopup="menu" aria-controls="routinemenu" title="Choose a routine (↑ ↓ to switch)">
+                    <span class="routinename">Routine</span><svg class="icon icon-chevron-down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <button type="button" class="iconbutton arrowonly" id="routinenext" aria-label="Next routine (↓)" title="Next routine (↓)"><svg class="icon icon-chevron-right" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></button>
+                <ul class="popover menu routinemenu" id="routinemenu" role="menu" aria-label="Routines"></ul>
+                <button type="button" class="iconbutton toggle" id="shufflebutton" aria-pressed="false" aria-label="Shuffle routines" title="Shuffle routines"><svg class="icon icon-shuffle" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.97a4 4 0 0 0 3.3-1.7l5.45-7.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.97a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.04a4 4 0 0 1-3.3-1.8l-.36-.45"/></svg></button>
+            </div>
+            <span class="dock-divider" aria-hidden="true"></span>
+            <div class="dock-group sessiongroup">
+                <button type="button" class="iconbutton" id="sessionpause" data-state="running" aria-label="Pause (P or Space)" title="Pause (P or Space)"><svg class="icon icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg><svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4.9v14.2a1 1 0 0 0 1.52.85l11.4-7.1a1 1 0 0 0 0-1.7L8.52 4.05A1 1 0 0 0 7 4.9Z"/></svg></button>
+                <button type="button" class="timebutton" id="sessiontimebutton" aria-haspopup="menu" aria-controls="sessionmenu" title="Session length">
+                    <span id="sessiontime">00:00</span><span id="sessionmode">Free</span><svg class="icon icon-chevron-down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="popover menu sessionmenu" id="sessionmenu" role="menu" aria-label="Session length">
+                    <button type="button" class="sessionpreset" role="menuitemradio" data-seconds="0">Free <span class="hint">no time limit</span></button>
+                    <button type="button" class="sessionpreset" role="menuitemradio" data-seconds="120">2 minutes</button>
+                    <button type="button" class="sessionpreset" role="menuitemradio" data-seconds="300">5 minutes</button>
+                    <button type="button" class="sessionpreset" role="menuitemradio" data-seconds="600">10 minutes</button>
+                    <div class="menuseparator" role="separator"></div>
+                    <button type="button" class="menuaction" id="sessionstop" role="menuitem"><svg class="icon icon-stop" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>Stop and reset<kbd>S</kbd></button>
+                </div>
+            </div>
+            <span class="dock-divider" aria-hidden="true"></span>
+            <div class="dock-group">
+                <button type="button" class="iconbutton" id="fullscreenbutton" data-state="off" aria-pressed="false" aria-label="Full screen (F)" title="Full screen (F)"><svg class="icon icon-maximize" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><svg class="icon icon-minimize" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg></button>
+                <button type="button" class="iconbutton" id="zenbutton" aria-label="Zen mode: hide everything except the dot (Z)" title="Zen mode (Z)"><svg class="icon icon-zen" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></svg></button>
+                <button type="button" class="iconbutton" id="settingsbutton" aria-haspopup="dialog" aria-controls="settingspanel" aria-label="Settings" title="Settings"><svg class="icon icon-settings" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg></button>
+            </div>
+            <div class="sessionprogress hidden" aria-hidden="true"><div id="sessionprogressfill"></div></div>
+        </div>
+
+        <section class="popover settingspanel" id="settingspanel" role="dialog" aria-labelledby="settingstitle">
+            <header class="panelheader">
+                <h2 id="settingstitle">Settings</h2>
+                <button type="button" class="iconbutton" id="settingsclose" aria-label="Close settings" title="Close (Esc)"><svg class="icon icon-close" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+            </header>
+
+            <div class="panelsection">
+                <h3>Movement</h3>
+                <label class="field" for="velocityslider"><span class="fieldlabel" id="velocitytext">Speed</span>
+                    <input id="velocityslider" type="range" min="0.25" max="25" value="3" step="0.001">
+                </label>
+                <label class="field" for="sizeslider"><span class="fieldlabel" id="sizetext">Size</span>
+                    <input id="sizeslider" type="range" min="0.01" max="10" value="2" step="0.001">
+                </label>
+                <label class="field" for="rangeslider"><span class="fieldlabel">Range</span>
+                    <input id="rangeslider" type="range" min="20" max="100" value="100" step="1" title="How much of the screen the dot travels across">
+                    <span class="fieldvalue" id="rangevalue">100%</span>
+                </label>
+            </div>
+
+            <div class="panelsection">
+                <h3>Appearance</h3>
+                <div class="field" role="group" aria-labelledby="themelabel"><span class="fieldlabel" id="themelabel">Theme</span>
+                    <div class="themeswatches">
+                        <button type="button" class="themeswatch" data-theme="classic" title="Classic" aria-label="Classic theme" style="--swatch-bg:#1e1e1e;--swatch-dot:#e2b714"></button>
+                        <button type="button" class="themeswatch" data-theme="midnight" title="Midnight" aria-label="Midnight theme" style="--swatch-bg:#0e1726;--swatch-dot:#4fd1c5"></button>
+                        <button type="button" class="themeswatch" data-theme="forest" title="Forest" aria-label="Forest theme" style="--swatch-bg:#142019;--swatch-dot:#f4a259"></button>
+                        <button type="button" class="themeswatch" data-theme="paper" title="Paper (light)" aria-label="Paper theme" style="--swatch-bg:#f1ede4;--swatch-dot:#c2412d"></button>
+                        <button type="button" class="themeswatch" data-theme="contrast" title="High contrast" aria-label="High contrast theme" style="--swatch-bg:#000000;--swatch-dot:#ffffff"></button>
+                    </div>
+                </div>
+                <div class="field" role="group" aria-labelledby="dotlabel"><span class="fieldlabel" id="dotlabel">Dot</span>
+                    <input id="dotcolor" type="color" value="#e2b714" title="Dot color" aria-label="Dot color">
+                    <div class="shapebuttons">
+                        <button type="button" class="shapebutton" data-shape="circle" title="Circle" aria-label="Circle dot"></button>
+                        <button type="button" class="shapebutton" data-shape="square" title="Square" aria-label="Square dot"></button>
+                        <button type="button" class="shapebutton" data-shape="diamond" title="Diamond" aria-label="Diamond dot"></button>
+                        <button type="button" class="shapebutton" data-shape="ring" title="Ring" aria-label="Ring dot"></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panelsection">
+                <h3>Sound</h3>
+                <div class="field" role="group" aria-labelledby="soundlabel"><span class="fieldlabel" id="soundlabel">Cues</span>
+                    <div class="segmented">
+                        <button type="button" class="soundmode" data-mode="off" title="No sounds">Off</button>
+                        <button type="button" class="soundmode" data-mode="end" title="A chime when a timed session finishes">End only</button>
+                        <button type="button" class="soundmode" data-mode="all" title="Also: session start, one minute left, Shuffle switching routines">All</button>
+                    </div>
+                </div>
+                <label class="field soundonly" for="soundvolume"><span class="fieldlabel">Volume</span>
+                    <input id="soundvolume" type="range" min="0" max="100" value="70" step="1">
+                    <span class="fieldvalue" id="soundvolumevalue">70%</span>
+                </label>
+                <label class="field soundonly" for="peekabooclicks"><span class="fieldlabel">Peek-a-boo clicks</span>
+                    <input id="peekabooclicks" class="switch" type="checkbox" role="switch">
+                    <span class="fieldhint">A soft click each time the dot jumps</span>
+                </label>
+                <div class="field">
+                    <span class="fieldlabel"></span>
+                    <button type="button" class="textbutton" id="soundtest"><svg class="icon icon-play-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg><span>Play end chime</span></button>
+                </div>
+            </div>
+
+            <div class="panelsection">
+                <h3>Controls</h3>
+                <div class="field" role="group" aria-labelledby="pickerlabel"><span class="fieldlabel" id="pickerlabel">Routine picker</span>
+                    <div class="segmented">
+                        <button type="button" class="pickermode" data-mode="dropdown">Menu</button>
+                        <button type="button" class="pickermode" data-mode="arrows">Arrows</button>
+                    </div>
+                </div>
+                <dl class="shortcuts" aria-label="Keyboard shortcuts">
+                    <div><dt><kbd>P</kbd> <kbd>Space</kbd></dt><dd>Pause / resume</dd></div>
+                    <div><dt><kbd>S</kbd></dt><dd>Stop and reset timer</dd></div>
+                    <div><dt><kbd>&uarr;</kbd> <kbd>&darr;</kbd></dt><dd>Change routine</dd></div>
+                    <div><dt><kbd>F</kbd></dt><dd>Full screen</dd></div>
+                    <div><dt><kbd>Z</kbd></dt><dd>Zen mode</dd></div>
+                    <div><dt><kbd>Esc</kbd></dt><dd>Close menu, exit Zen</dd></div>
+                </dl>
+            </div>
+
+            <footer class="panelfooter">
+                <button type="button" class="textbutton" id="resetsettings"><svg class="icon icon-reset" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg><span class="label">Reset to defaults</span></button>
+                <nav class="sociallinks" aria-label="Community">
+                    <a href="https://discord.gg/Fea2vU8JFC" target="_blank" rel="noopener">Discord</a>
+                    <a href="https://github.com/ErezShahaf/BlinkCamp" target="_blank" rel="noopener">GitHub</a>
+                </nav>
+            </footer>
+        </section>
+
         <!-- <div class="backgroundvideo">Background Video</div> -->
         <!-- <input type="checkbox" class="backgroundvideotick" checked></div> -->
         <!-- <div class="notifications">Set Daily Reminders</div>
         <button class="notifications" id="notifications-button"></button> -->
-        <a href="https://discord.gg/Fea2vU8JFC" target="_blank">
-            <img src="Assets/discord-icon.svg" class="socialicon" id="discord-icon" alt="Blinkcamp discord icon">
-        </a>
-        <a href="https://github.com/ErezShahaf/BlinkCamp" target="_blank">
-            <img src="Assets/github-icon.svg" class="socialicon" id="github-icon" alt="Blinkcamp github repository icon">
-        </a>
+        <div class="socialicons">
+            <a href="https://github.com/ErezShahaf/BlinkCamp" target="_blank" rel="noopener" title="BlinkCamp on GitHub">
+                <img src="Assets/github-icon.svg" class="socialicon" id="github-icon" alt="Blinkcamp github repository icon">
+            </a>
+            <a href="https://discord.gg/Fea2vU8JFC" target="_blank" rel="noopener" title="BlinkCamp on Discord">
+                <img src="Assets/discord-icon.svg" class="socialicon" id="discord-icon" alt="Blinkcamp discord icon">
+            </a>
+        </div>
+    </div>
+
+    <button type="button" class="zenexit" id="zenexit"><svg class="icon icon-close" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg><span>Exit Zen</span><kbd>Esc</kbd></button>
+
+    <div id="sessioncomplete" class="hidden" role="dialog" aria-labelledby="sessioncompletetitle">
+        <div id="sessioncompletetitle">Session complete</div>
+        <div id="sessioncompletesummary"></div>
+        <div class="sessioncompleteactions">
+            <button id="sessionrestart">Go again</button>
+            <button id="sessionfree">Keep going (Free)</button>
+        </div>
     </div>
 </body>
 <script src="https://www.youtube.com/iframe_api"></script>
