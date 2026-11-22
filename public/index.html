@@ -36,6 +36,18 @@
         </div>
         <div class="arrow left"></div>
         <div class="arrow right"></div>
+        <div class="session" role="group" aria-label="Session length">
+            <div class="sessionlabel">Timer</div>
+            <div class="sessionpresets">
+                <button class="sessionpreset" data-seconds="0">Free</button>
+                <button class="sessionpreset" data-seconds="120">2m</button>
+                <button class="sessionpreset" data-seconds="300">5m</button>
+                <button class="sessionpreset" data-seconds="600">10m</button>
+            </div>
+            <div id="sessiontime">00:00</div>
+            <button id="sessionpause" title="Pause / resume (Space)">Pause</button>
+            <div class="sessionprogress hidden"><div id="sessionprogressfill"></div></div>
+        </div>
         <div id="velocitytext">Speed</div>
         <input id="velocityslider" type="range" min="0.25" max="25" value="3" step="0.001">
         <div id="sizetext">Size</div>
@@ -70,6 +82,14 @@
         <a href="https://github.com/ErezShahaf/BlinkCamp" target="_blank">
             <img src="Assets/github-icon.svg" class="socialicon" id="github-icon" alt="Blinkcamp github repository icon">
         </a>
+    </div>
+    <div id="sessioncomplete" class="hidden" role="dialog" aria-labelledby="sessioncompletetitle">
+        <div id="sessioncompletetitle">Session complete</div>
+        <div id="sessioncompletesummary"></div>
+        <div class="sessioncompleteactions">
+            <button id="sessionrestart">Go again</button>
+            <button id="sessionfree">Keep going (Free)</button>
+        </div>
     </div>
 </body>
 <script src="https://www.youtube.com/iframe_api"></script>

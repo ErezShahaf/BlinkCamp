@@ -419,6 +419,181 @@ transform: scale(1.2);
     right: calc(5vw + 170px);
 }
 
+/* ---------- Session timer ----------
+   Colors use the theme variables when they exist, with the current look as fallback. */
+.game .dot
+{
+    transition: opacity 0.4s ease;
+}
+
+.game .dot.resting
+{
+    opacity: 0.45;
+}
+
+.session
+{
+    position: absolute;
+    top: calc(85vh - 160px);
+    left: 5vw;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--ui-text, white);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.sessionlabel
+{
+    width: 40px;
+}
+
+.sessionpresets
+{
+    display: flex;
+    border: 1px solid var(--ui-line, rgba(255, 255, 255, 0.35));
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.session button,
+#sessioncomplete button
+{
+    font: inherit;
+    font-size: 12px;
+    color: var(--ui-text, white);
+    background: transparent;
+    border: none;
+    padding: 3px 8px;
+    cursor: pointer;
+}
+
+.sessionpreset + .sessionpreset
+{
+    border-left: 1px solid var(--ui-line, rgba(255, 255, 255, 0.35));
+}
+
+.session button:hover,
+#sessioncomplete button:hover
+{
+    background: rgba(128, 128, 128, 0.18);
+}
+
+.session .sessionpreset.selected,
+#sessioncomplete #sessionrestart
+{
+    background: var(--accent, #e2b714);
+    color: var(--background-color, #1e1e1e);
+}
+
+#sessiontime
+{
+    min-width: 44px;
+    font-variant-numeric: tabular-nums;
+}
+
+.session #sessionpause
+{
+    border: 1px solid var(--ui-line, rgba(255, 255, 255, 0.35));
+    border-radius: 6px;
+    min-width: 64px;
+}
+
+.session #sessionpause:disabled
+{
+    opacity: 0.4;
+    cursor: default;
+}
+
+.sessionprogress
+{
+    position: absolute;
+    left: 50px;
+    right: 0;
+    bottom: -8px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(128, 128, 128, 0.3);
+    overflow: hidden;
+}
+
+#sessionprogressfill
+{
+    width: 100%;
+    height: 100%;
+    background: var(--accent, #e2b714);
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 1s linear;
+}
+
+#sessioncomplete
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: calc(100vw - 32px);
+    padding: 20px 28px;
+    border-radius: 10px;
+    background: var(--background-color, #1e1e1e);
+    border: 1px solid var(--accent, #e2b714);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--ui-text, white);
+    text-align: center;
+    animation: sessioncomplete-in 0.35s ease-out;
+}
+
+#sessioncompletetitle
+{
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--accent, #e2b714);
+    margin-bottom: 8px;
+}
+
+#sessioncompletesummary
+{
+    font-size: 14px;
+    margin-bottom: 14px;
+}
+
+.sessioncompleteactions
+{
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+#sessioncomplete button
+{
+    font-size: 13px;
+    padding: 6px 12px;
+    border: 1px solid var(--ui-line, rgba(255, 255, 255, 0.35));
+    border-radius: 6px;
+}
+
+#sessioncomplete #sessionrestart
+{
+    border-color: var(--accent, #e2b714);
+}
+
+@keyframes sessioncomplete-in
+{
+    from { opacity: 0; transform: translate(-50%, -46%); }
+    to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.hidden
+{
+    display: none !important;
+}
+
 .visually-hidden {
     position: absolute;
     clip: rect(0 0 0 0);
