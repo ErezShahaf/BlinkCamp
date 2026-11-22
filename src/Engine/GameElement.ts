@@ -13,23 +13,37 @@ export abstract class GameElement implements IGameElement
           });
     }
 
+    // Position is cached here: reading it back via getComputedStyle every frame forces style recalculation.
+    private x:number = NaN;
+    private y:number = NaN;
+
     get X():number 
     {
-        return parseFloat(getComputedStyle(this.htmlElement).getPropertyValue("--x"));
+        if (Number.isNaN(this.x))
+        {
+            this.x = parseFloat(getComputedStyle(this.htmlElement).getPropertyValue("--x"));
+        }
+        return this.x;
     }
 
     set X(value:number) 
     {
+        this.x = value;
         this.htmlElement.style.setProperty("--x", value.toString());
     }
 
     get Y():number 
     {
-        return parseFloat(getComputedStyle(this.htmlElement).getPropertyValue("--y"));
+        if (Number.isNaN(this.y))
+        {
+            this.y = parseFloat(getComputedStyle(this.htmlElement).getPropertyValue("--y"));
+        }
+        return this.y;
     }
 
     set Y(value:number) 
     {
+        this.y = value;
         this.htmlElement.style.setProperty("--y", value.toString());
     }
 

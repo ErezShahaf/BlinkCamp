@@ -8,6 +8,8 @@ export class Dot extends GameElement
     velocity:number = 3;
     dTime:number = 0;
     halfScreen:number = 50;
+    // Cached so routines can read it every frame without forcing a style recalculation.
+    private radius:number = NaN;
 
     constructor(dotElement:HTMLElement)
     {
@@ -29,12 +31,17 @@ export class Dot extends GameElement
 
     get Radius():number 
     {
-        return parseFloat(getComputedStyle(this.dotElement).getPropertyValue("--radius"));
+        if (Number.isNaN(this.radius))
+        {
+            this.radius = parseFloat(getComputedStyle(this.dotElement).getPropertyValue("--radius"));
+        }
+        return this.radius;
     }
 
     set Radius(value:number)
     {
-        this.dotElement.style.setProperty("--radius", value.toString());
+        this.radius = Number(value);
+        this.dotElement.style.setProperty("--radius", this.radius.toString());
     }
 
     Update(dTime:number):void 
